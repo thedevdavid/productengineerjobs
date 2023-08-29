@@ -32,11 +32,7 @@ import { NavItem } from "@/types";
 
 export const navigationLinks: NavItem[] = [
   {
-    title: "Product Engineer for Devs",
-    href: "/projects",
-  },
-  {
-    title: "Product Engineer for Companies",
-    href: "/uses",
+    title: "Product Engineer Guide",
+    href: "/",
   },
 ];

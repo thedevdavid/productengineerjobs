@@ -1,25 +1,24 @@
 import Link from "next/link";
+import { getPosts } from "@/sanity/queries";
 import { ArrowRight } from "iconoir-react";
 
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Sidebar } from "@/components/home-sidebar";
+import PostItem from "@/components/post-item";
 import { Searchbar } from "@/components/searchbar";
 
 export default async function Home() {
+  const posts = await getPosts();
+  console.log(posts);
   return (
     <div className="pb-10">
       <div className="container flex max-w-7xl flex-col items-center justify-center text-center sm:py-20">
-        <h1 className="mb-2 flex items-center text-4xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl">
+        <h1 className="mb-2 flex flex-col items-center text-4xl font-bold leading-tight tracking-tight sm:flex-row md:text-6xl">
           Search
-          <span className="relative ml-3 h-[1em] w-64 overflow-hidden">
-            <span className="animate-slide absolute h-full w-full -translate-y-full leading-none [animation-delay:0.83s]">
+          <span className="relative h-[1em] w-64 overflow-hidden">
+            <span className="absolute left-0 top-0 h-full w-full -translate-y-full animate-slide leading-none [animation-delay:1.83s]">
               Product
             </span>
-            <span className="animate-slide absolute h-full w-full -translate-y-full leading-none [animation-delay:1.83s]">
+            <span className="absolute left-0 top-0 h-full w-full -translate-y-full animate-slide leading-none [animation-delay:3s]">
               Platform
             </span>
           </span>{" "}
@@ -36,44 +35,11 @@ export default async function Home() {
               <h2 className="font-heading text-2xl font-bold leading-tight tracking-tight">Featured Jobs</h2>
               <p className="text-muted-foreground">These are the latest jobs posted on Product Engineer Jobs.</p>
               <div className=" grid grid-cols-1 gap-4">
-                <Link href="/posts/1">
-                  <Card className={cn("rounded-md py-4 shadow-sm")}>
-                    <CardContent className="flex items-center justify-between">
-                      <div className="">
-                        <CardTitle>Product Engineer</CardTitle>
-                        <CardDescription>ScreamingBox</CardDescription>
-                        <div className="mt-3 space-x-2">
-                          <Badge variant="default">Hourly</Badge>
-                          <Badge variant="secondary">Remote</Badge>
-                          <Badge variant="outline">Contract</Badge>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-muted-foreground">2 days ago</p>
-                        <p className="text-muted-foreground">$45-65</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-                <Link href="/posts/1">
-                  <Card className={cn("mb-4 rounded-md shadow-sm")}>
-                    <CardHeader>
-                      <CardTitle>Product Engineer</CardTitle>
-                      <CardDescription>ScreamingBox</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex items-center justify-between">
-                      <div className="space-x-2">
-                        <Badge variant="default">Hourly</Badge>
-                        <Badge variant="secondary">Remote</Badge>
-                        <Badge variant="outline">Contract</Badge>
-                      </div>
-                    </CardContent>
-                    <CardFooter>
-                      <p className="text-muted-foreground">$45-65</p>
-                      <p className="text-muted-foreground">2 days ago</p>
-                    </CardFooter>
-                  </Card>
-                </Link>
+                {!posts.length ? (
+                  <p className="text-muted-foreground">No jobs found.</p>
+                ) : (
+                  posts.map((post) => <PostItem key={post._id} post={post} />)
+                )}
               </div>
             </div>
             <Link

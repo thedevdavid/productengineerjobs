@@ -4,13 +4,13 @@ import * as z from "zod";
 
 import JobNotification from "@/components/emails/job-notification";
 
-const receiver = process.env.EMAIL_RECEIVER || "There's no receiver!";
 const sender = process.env.EMAIL_SENDER || "There's no sender!";
 
 const resend = new Resend(process.env.EMAIL_API_KEY || "There's no API key!");
 
 const sendRouteSchema = z.object({
   name: z.string().min(2),
+  emailList: z.array(z.string().email()),
   newJobs: z.array(
     z.object({
       position: z.string().min(2),
@@ -22,12 +22,12 @@ const sendRouteSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const { name, newJobs } = await req.json().then((body) => sendRouteSchema.parse(body));
+  const { name, newJobs, emailList } = await req.json().then((body) => sendRouteSchema.parse(body));
 
   try {
     const data = await resend.emails.send({
       from: `ProductEngineerJobs.co <${sender}>`,
-      to: [receiver],
+      to: [...emailList],
       subject: `New product engineer jobs for ${name}`,
       react: JobNotification({ name, newJobs }),
     });

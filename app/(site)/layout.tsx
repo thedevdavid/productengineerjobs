@@ -1,4 +1,6 @@
-import siteMetadata from "@/lib/metadata";
+import { getPages } from "@/sanity/queries";
+import { NavItem } from "@/types";
+
 import { cn } from "@/lib/utils";
 import Footer from "@/components/footer";
 import { Navigation } from "@/components/navigation";
@@ -7,7 +9,20 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children }: RootLayoutProps) {
+  const pages = await getPages();
+  const content = pages.map((page) => {
+    return {
+      title: page.title,
+      href: page.slug,
+    };
+  });
+  const navigationLinks: NavItem[] = [
+    {
+      title: "What's a Product Engineer?",
+      content,
+    },
+  ];
   return (
     <>
       <a
@@ -17,7 +32,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         Skip to Content
       </a>
-      <Navigation />
+      <Navigation navigationLinks={navigationLinks} />
       <main className={cn("mt-20")} id="main-content">
         {children}
       </main>

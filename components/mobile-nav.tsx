@@ -3,17 +3,17 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MobileLinkProps } from "@/types";
+import { MobileLinkProps, NavItem } from "@/types";
 import { Menu } from "iconoir-react";
 
 import siteMetadata from "@/lib/metadata";
-import { navigationLinks } from "@/lib/navigation-links";
+// import { navigationLinks } from "@/lib/navigation-links";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-export function MobileNav() {
+export function MobileNav({ navigationLinks }: { navigationLinks: NavItem[] }) {
   const [open, setOpen] = React.useState(false);
 
   return (

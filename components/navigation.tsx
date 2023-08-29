@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { NavItem } from "@/types";
 
 import siteMetadata from "@/lib/metadata";
 import { cn, debounce } from "@/lib/utils";
@@ -12,7 +13,7 @@ import { Navbar } from "@/components/navbar";
 
 const SCROLL_OFFSET = 200;
 
-export function Navigation() {
+export function Navigation({ navigationLinks }: { navigationLinks: NavItem[] }) {
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
 
@@ -55,14 +56,16 @@ export function Navigation() {
             </div>
             <div className="order-3 sm:order-2 sm:ml-auto">
               <nav className="ml-auto hidden space-x-6 text-sm font-medium sm:block sm:w-full">
-                <Navbar />
+                <Navbar navigationLinks={navigationLinks} />
               </nav>
               <nav className="sm:hidden">
-                <MobileNav />
+                <MobileNav navigationLinks={navigationLinks} />
               </nav>
             </div>
             <div className="order-2 flex w-full items-center gap-2 sm:order-3 sm:w-fit">
-              <Button>Post a Job</Button>
+              <Button asChild>
+                <Link href="/post-a-job">Post a Job</Link>
+              </Button>
               {/* <ModeToggle /> */}
             </div>
           </div>

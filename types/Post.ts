@@ -1,7 +1,7 @@
-import { ValueOf } from "next/dist/shared/lib/constants";
-import type { Image, PortableTextBlock, SanityDocument } from "sanity";
+import type { PortableTextBlock, SanityDocument } from "sanity";
 
 import { countriesAndRegions } from "@/lib/countries-and-regions";
+import { Company } from './Company';
 
 export interface Category extends SanityDocument {
   _type: "category";
@@ -34,12 +34,10 @@ export interface Post extends SanityDocument {
   publishedAt: Date;
   slug: string;
   category: Category;
-  company: string;
+  company: Company;
   location: (typeof countriesAndRegions)[number]["value"];
   type: "remote" | "hybrid" | "onsite";
   contract: "full-time" | "part-time" | "contract" | "internship";
-  companyLogo: Image;
-  companyTwitter: string;
   applyUrl: string;
   salaryRange: {
     salaryRangeHourly?: SalaryRange;

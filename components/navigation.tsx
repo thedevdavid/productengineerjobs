@@ -48,10 +48,22 @@ export function Navigation({ navigationLinks }: { navigationLinks: NavItem[] }) 
         )}
       >
         <div className="flex items-center gap-2 rounded-full border-b border-foreground/25 bg-background/95 px-3 py-2 shadow-md supports-[backdrop-filter]:bg-background/60 supports-[backdrop-filter]:bg-clip-padding supports-[backdrop-filter]:backdrop-blur sm:justify-between sm:rounded-none sm:px-3">
-          <div className="container mx-auto flex max-w-6xl">
+          <div className="container mx-auto flex max-w-7xl">
             <div className="flex items-center justify-start">
               <Link href="/" aria-label="Go to Home" className="font-extrabold hover:text-foreground/60">
-                ProductEngineerJobs.co
+                <svg
+                  viewBox="0 0 390 390"
+                  fill="currentColor"
+                  className="mr-2 inline-block h-6 w-6"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M79 222V168H133H156H258V71H171V17H258H312V71V168V222H258H241H165H133H79ZM79 319V370V373H133V319H79ZM171 319V373H312V370V319H258H241H171ZM133 17H79V71H133V17Z"
+                  />
+                </svg>
+                <span>ProductEngineerJobs.co</span>
               </Link>
             </div>
             <div className="order-3 sm:order-2 sm:ml-auto">

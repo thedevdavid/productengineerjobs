@@ -23,7 +23,7 @@ export const Searchbar = () => {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    redirect(`${process.env.NEXT_PUBLIC_APP_URL}/search?${process.env.NEXT_PUBLIC_ALGOLIA_INDEX}[query]=${data.query}`);
+    console.log(data)
   }
 
   return (

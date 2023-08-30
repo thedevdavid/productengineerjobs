@@ -1,13 +1,11 @@
 import Link from "next/link";
-import { formatDistance, subDays } from "date-fns";
+import { formatDistance } from "date-fns";
 import { VerifiedBadge } from "iconoir-react";
 
 import { Post } from "@/types/Post";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const PostItem = ({ post }: { post: Post }) => {
@@ -20,7 +18,7 @@ const PostItem = ({ post }: { post: Post }) => {
         <CardContent className="flex items-center justify-between">
           <div className="">
             <div className="flex flex-row items-center">
-              <CardDescription>{post.company}</CardDescription>
+              <CardDescription>{post.company.name}</CardDescription>
               {post.isVerified && (
                 <Tooltip>
                   <TooltipTrigger>

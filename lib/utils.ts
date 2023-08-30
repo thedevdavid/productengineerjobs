@@ -1,5 +1,4 @@
 import { clsx, type ClassValue } from "clsx";
-import { compareDesc } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -20,6 +19,3 @@ export function debounce<T extends (...args: any[]) => any>(func: T, wait: numbe
     if (callNow) func.apply(context, args);
   };
 }
-
-export const sortByDate = (a: Post, b: Post) =>
-  compareDesc(new Date(a.lastUpdatedDate || a.publishedDate), new Date(b.lastUpdatedDate || b.publishedDate));

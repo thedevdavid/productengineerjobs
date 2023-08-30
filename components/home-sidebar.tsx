@@ -19,7 +19,7 @@ export function Sidebar({ className, ...props }: CardProps) {
             <Label htmlFor="email">Email</Label>
             <Input type="email" id="email" placeholder="Email" />
           </div>
-          <Button type="submit" variant="secondary" className="w-full">
+          <Button disabled type="submit" variant="secondary" className="w-full">
             Notify me
           </Button>
         </CardContent>

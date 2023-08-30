@@ -33,7 +33,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         Skip to Content
       </a>
       <Navigation navigationLinks={navigationLinks} />
-      <main className={cn("mt-20")} id="main-content">
+      <main className={cn("mb-8 mt-20")} id="main-content">
         {children}
       </main>
       <Footer />

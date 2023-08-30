@@ -30,7 +30,8 @@ export default defineType({
     defineField({
       name: "company",
       title: "Company",
-      type: "string",
+      type: "reference",
+      to: { type: "company" },
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -67,17 +68,6 @@ export default defineType({
           { title: "Internship", value: "internship" },
         ],
       },
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "companyLogo",
-      title: "Company Logo",
-      type: "image",
-    }),
-    defineField({
-      name: "companyTwitter",
-      title: "Company Twitter",
-      type: "string",
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -134,7 +124,7 @@ export default defineType({
       title: "Slug",
       type: "slug",
       options: {
-        source: (doc) => `${doc.title}-${doc.company}`,
+        source: (doc) => `${doc.title}-${doc.publishedAt}`,
         maxLength: 120,
         isUnique: (value, context) => context.defaultIsUnique(value, context),
       },

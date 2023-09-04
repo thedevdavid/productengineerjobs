@@ -17,6 +17,17 @@ const navigation = {
     { name: "APAC", href: "#" },
     { name: "Worldwide", href: "#" },
   ],
+  contract: [
+    { name: "Full-Time", href: "#" },
+    { name: "Part-Time", href: "#" },
+    { name: "Contract", href: "#" },
+    { name: "Internship", href: "#" },
+  ],
+  type: [
+    { name: "Remote", href: "#" },
+    { name: "Hybrid", href: "#" },
+    { name: "On-Site", href: "#" },
+  ],
   legal: [
     { name: "Privacy", href: "#" },
     { name: "Terms", href: "#" },
@@ -29,8 +40,8 @@ const Footer = () => {
       <h2 id="footer-heading" className="sr-only">
         Footer
       </h2>
-      <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
-        <div className="xl:grid xl:grid-cols-3 xl:gap-8">
+      <div className="container mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           <div>
             <Link href="/" aria-label="Go to Home" className="font-extrabold">
               <svg
@@ -48,59 +59,65 @@ const Footer = () => {
               <span>ProductEngineerJobs.co</span>
             </Link>
           </div>
-          <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
-            <div className="md:grid md:grid-cols-2 md:gap-8">
-              <div>
-                <h3 className="text-sm font-semibold leading-6">By Position</h3>
-                <ul role="list" className="mt-6 space-y-2">
-                  {navigation.jobs.map((item) => (
-                    <li key={item.name}>
-                      <a href={item.href} className="text-sm leading-6 text-muted-foreground hover:text-foreground">
-                        {item.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold leading-6">By Location</h3>
-                <ul role="list" className="mt-6 space-y-2">
-                  {navigation.location.map((item) => (
-                    <li key={item.name}>
-                      <a href={item.href} className="text-sm leading-6 text-muted-foreground hover:text-foreground">
-                        {item.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <div className="md:grid md:grid-cols-2 md:gap-8">
-              <div className="mt-10 md:mt-0">
-                <h3 className="text-sm font-semibold leading-6">Companies</h3>
-                <ul role="list" className="mt-6 space-y-2">
-                  {navigation.companies.map((item) => (
-                    <li key={item.name}>
-                      <a href={item.href} className="text-sm leading-6 text-muted-foreground hover:text-foreground">
-                        {item.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="mt-10 md:mt-0">
-                <h3 className="text-sm font-semibold leading-6">Legal</h3>
-                <ul role="list" className="mt-6 space-y-2">
-                  {navigation.legal.map((item) => (
-                    <li key={item.name}>
-                      <a href={item.href} className="text-sm leading-6 text-muted-foreground hover:text-foreground">
-                        {item.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+          <div>
+            <h3 className="text-sm font-semibold leading-6">By Position</h3>
+            <ul role="list" className="mt-3 space-y-2">
+              {navigation.jobs.map((item) => (
+                <li key={item.name}>
+                  <a href={item.href} className="text-sm leading-6 text-muted-foreground hover:text-foreground">
+                    {item.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold leading-6">By Location</h3>
+            <ul role="list" className="mt-3 space-y-2">
+              {navigation.location.map((item) => (
+                <li key={item.name}>
+                  <a href={item.href} className="text-sm leading-6 text-muted-foreground hover:text-foreground">
+                    {item.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="mt-10 md:mt-0">
+            <h3 className="text-sm font-semibold leading-6">By Place</h3>
+            <ul role="list" className="mt-3 space-y-2">
+              {navigation.type.map((item) => (
+                <li key={item.name}>
+                  <a href={item.href} className="text-sm leading-6 text-muted-foreground hover:text-foreground">
+                    {item.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="mt-10 md:mt-0">
+            <h3 className="text-sm font-semibold leading-6">By Contract</h3>
+            <ul role="list" className="mt-3 space-y-2">
+              {navigation.contract.map((item) => (
+                <li key={item.name}>
+                  <a href={item.href} className="text-sm leading-6 text-muted-foreground hover:text-foreground">
+                    {item.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="mt-10 md:mt-0">
+            <h3 className="text-sm font-semibold leading-6">Companies</h3>
+            <ul role="list" className="mt-3 space-y-2">
+              {navigation.companies.map((item) => (
+                <li key={item.name}>
+                  <a href={item.href} className="text-sm leading-6 text-muted-foreground hover:text-foreground">
+                    {item.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
         {/* <div className="mt-16 border-t border-border pt-8 sm:mt-20 lg:mt-24 lg:flex lg:items-center lg:justify-between">
@@ -110,7 +127,7 @@ const Footer = () => {
               The latest news, articles, and resources, sent to your inbox weekly.
             </p>
           </div>
-          <form className="mt-6 sm:flex sm:max-w-md lg:mt-0">
+          <form className="mt-3 sm:flex sm:max-w-md lg:mt-0">
             <label htmlFor="email-address" className="sr-only">
               Email address
             </label>
@@ -134,7 +151,7 @@ const Footer = () => {
           </form>
         </div> */}
         <div className="mt-8 border-t border-border pt-8 text-sm md:flex md:items-center md:justify-between">
-          <div className="md:order-2">
+          <div className="md:order-3">
             <a href="https://davidlevai.com" className="text-muted-foreground hover:text-foreground">
               Click here to hire a Product Engineer in a monthly subscription instead
             </a>
@@ -146,6 +163,15 @@ const Footer = () => {
             </a>
             .
           </p>
+          <ul role="list" className="flex list-none flex-row space-x-2 md:order-2">
+            {navigation.legal.map((item) => (
+              <li key={item.name}>
+                <a href={item.href} className="text-sm leading-6 text-muted-foreground hover:text-foreground">
+                  {item.name}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>

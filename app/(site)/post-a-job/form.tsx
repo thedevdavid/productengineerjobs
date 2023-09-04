@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BookmarkIcon } from "@radix-ui/react-icons";
-import { ArrowUnionVertical, Check, Send } from "iconoir-react";
+import { ArrowUnionVertical, Check, CheckCircle, Send } from "iconoir-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -10,15 +10,44 @@ import { countriesAndRegions } from "@/lib/countries-and-regions";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
 
 import Editor from "./editor";
+
+const items = [
+  {
+    id: "recents",
+    label: "Recents",
+  },
+  {
+    id: "home",
+    label: "Home",
+  },
+  {
+    id: "applications",
+    label: "Applications",
+  },
+  {
+    id: "desktop",
+    label: "Desktop",
+  },
+  {
+    id: "downloads",
+    label: "Downloads",
+  },
+  {
+    id: "documents",
+    label: "Documents",
+  },
+] as const;
 
 const formSchema = z.object({
   title: z.string().min(1).max(255),
@@ -28,7 +57,7 @@ const formSchema = z.object({
   type: z.string(),
   contract: z.string(),
   benefits: z.string(),
-  salaryType: z.string(),
+  salaryType: z.enum(["hourly", "project", "yearly"]),
   salaryMin: z.coerce.number(),
   salaryMax: z.number().gte(1),
   applyUrl: z.string().min(1).max(255),
@@ -40,6 +69,9 @@ const formSchema = z.object({
   companyInvoiceAddress: z.string().min(1).max(255),
   companyInvoiceVAT: z.string().min(1).optional(),
   companyInvoiceEmail: z.string().email().min(1).max(255),
+  items: z.array(z.string()).refine((value) => value.some((item) => item), {
+    message: "You have to select at least one item.",
+  }),
 });
 
 const tags = [
@@ -67,17 +99,21 @@ export const JobForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
+      type: "remote",
+      category: "product-engineer",
+      contract: "contract",
       salaryMin: 1,
       salaryMax: 1,
-      applyUrl: "string",
+      applyUrl: "",
       companyTitle: "",
-      companyTwitter: "string",
-      companyLogo: "string",
-      companyPrivateEmail: "string",
-      companyInvoiceEntity: "string",
-      companyInvoiceAddress: "string",
-      companyInvoiceVAT: "string",
-      companyInvoiceEmail: "string",
+      companyTwitter: "",
+      companyLogo: "",
+      companyPrivateEmail: "",
+      companyInvoiceEntity: "",
+      companyInvoiceAddress: "",
+      companyInvoiceVAT: "",
+      companyInvoiceEmail: "",
+      items: ["recents", "home"],
     },
   });
 
@@ -99,18 +135,22 @@ export const JobForm = () => {
           <Card className={cn("rounded-md shadow-sm")}>
             <CardHeader className="">
               <CardTitle>Job Details</CardTitle>
+              <CardDescription>Please be detailed. Candidates love good descriptions.</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Position</FormLabel>
+                    <FormLabel>Job Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="Product Engineer for Startup" {...field} />
+                      <Input placeholder="Product Engineer with Next.js Knowledge" {...field} />
                     </FormControl>
-                    <FormDescription>The Position</FormDescription>
+                    <FormDescription>
+                      Please add a specific knowledge or company type. Examples: &quot;Product Engineer for YC
+                      Startup&quot; or &quot;Platform Engineer with Shopify Knowledge&quot;
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -123,28 +163,24 @@ export const JobForm = () => {
                   <FormItem className="space-y-3">
                     <FormLabel>Category</FormLabel>
                     <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1"
-                      >
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                      <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-wrap">
+                        <FormItem className="flex space-x-1 space-y-1">
                           <FormControl>
-                            <RadioGroupItem value="platform-engineer" />
+                            <RadioGroupItem value="platform-engineer" className="peer hidden" />
                           </FormControl>
-                          <FormLabel className="font-normal">Platform Engineer</FormLabel>
+                          <FormLabel className="block cursor-pointer rounded-md border border-border p-4 font-normal shadow-sm hover:border-primary peer-aria-checked:border-primary peer-aria-checked:ring-1 peer-aria-checked:ring-ring">
+                            <CheckCircle className="mr-2 hidden h-4 w-4 peer-aria-checked:inline" />
+                            Platform Engineer
+                          </FormLabel>
                         </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormItem className="flex space-x-1 space-y-1">
                           <FormControl>
-                            <RadioGroupItem value="product-engineer" />
+                            <RadioGroupItem value="product-engineer" className="peer hidden" />
                           </FormControl>
-                          <FormLabel className="font-normal">Product Engineer</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="sounds-like" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Sounds like...</FormLabel>
+                          <FormLabel className="block cursor-pointer rounded-md border border-border p-4 font-normal shadow-sm hover:border-primary peer-aria-checked:border-primary peer-aria-checked:ring-1 peer-aria-checked:ring-ring">
+                            <CheckCircle className="mr-2 hidden h-4 w-4 peer-aria-checked:inline" />
+                            Product Engineer
+                          </FormLabel>
                         </FormItem>
                       </RadioGroup>
                     </FormControl>
@@ -262,28 +298,33 @@ export const JobForm = () => {
                   <FormItem>
                     <FormLabel>Work from...</FormLabel>
                     <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1"
-                      >
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                      <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-wrap">
+                        <FormItem className="flex space-x-1 space-y-1">
                           <FormControl>
-                            <RadioGroupItem value="remote" />
+                            <RadioGroupItem value="remote" className="peer hidden" />
                           </FormControl>
-                          <FormLabel className="font-normal">Remote</FormLabel>
+                          <FormLabel className="block cursor-pointer rounded-md border border-border p-4 font-normal shadow-sm hover:border-primary peer-aria-checked:border-primary peer-aria-checked:ring-1 peer-aria-checked:ring-ring">
+                            <CheckCircle className="mr-2 hidden h-4 w-4 peer-aria-checked:inline" />
+                            🏖️ Remote
+                          </FormLabel>
                         </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormItem className="flex space-x-1 space-y-1">
                           <FormControl>
-                            <RadioGroupItem value="contract" />
+                            <RadioGroupItem value="hybrid" className="peer hidden" />
                           </FormControl>
-                          <FormLabel className="hybrid">Hybrid</FormLabel>
+                          <FormLabel className="block cursor-pointer rounded-md border border-border p-4 font-normal shadow-sm hover:border-primary peer-aria-checked:border-primary peer-aria-checked:ring-1 peer-aria-checked:ring-ring">
+                            <CheckCircle className="mr-2 hidden h-4 w-4 peer-aria-checked:inline" />
+                            🤏 Hybrid
+                          </FormLabel>
                         </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormItem className="flex space-x-1 space-y-1">
                           <FormControl>
-                            <RadioGroupItem value="on-site" />
+                            <RadioGroupItem value="on-site" className="peer hidden" />
                           </FormControl>
-                          <FormLabel className="font-normal">On-Site</FormLabel>
+                          <FormLabel className="block cursor-pointer rounded-md border border-border p-4 font-normal shadow-sm hover:border-primary peer-aria-checked:border-primary peer-aria-checked:ring-1 peer-aria-checked:ring-ring">
+                            <CheckCircle className="mr-2 hidden h-4 w-4 peer-aria-checked:inline" />
+                            🏢 On-Site
+                          </FormLabel>
                         </FormItem>
                       </RadioGroup>
                     </FormControl>
@@ -299,34 +340,42 @@ export const JobForm = () => {
                   <FormItem className="space-y-3">
                     <FormLabel>Contract Type</FormLabel>
                     <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1"
-                      >
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                      <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-wrap">
+                        <FormItem className="flex space-x-1 space-y-1">
                           <FormControl>
-                            <RadioGroupItem value="full-time" />
+                            <RadioGroupItem value="full-time" className="peer hidden" />
                           </FormControl>
-                          <FormLabel className="font-normal">Full-Time</FormLabel>
+                          <FormLabel className="block cursor-pointer rounded-md border border-border p-4 font-normal shadow-sm hover:border-primary peer-aria-checked:border-primary peer-aria-checked:ring-1 peer-aria-checked:ring-ring">
+                            <CheckCircle className="mr-2 hidden h-4 w-4 peer-aria-checked:inline" />
+                            Full-Time
+                          </FormLabel>
                         </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormItem className="flex space-x-1 space-y-1">
                           <FormControl>
-                            <RadioGroupItem value="contract" />
+                            <RadioGroupItem value="contract" className="peer hidden" />
                           </FormControl>
-                          <FormLabel className="font-normal">Contract</FormLabel>
+                          <FormLabel className="block cursor-pointer rounded-md border border-border p-4 font-normal shadow-sm hover:border-primary peer-aria-checked:border-primary peer-aria-checked:ring-1 peer-aria-checked:ring-ring">
+                            <CheckCircle className="mr-2 hidden h-4 w-4 peer-aria-checked:inline" />
+                            Contract
+                          </FormLabel>
                         </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormItem className="flex space-x-1 space-y-1">
                           <FormControl>
-                            <RadioGroupItem value="part-time" />
+                            <RadioGroupItem value="part-time" className="peer hidden" />
                           </FormControl>
-                          <FormLabel className="font-normal">Part-Time</FormLabel>
+                          <FormLabel className="block cursor-pointer rounded-md border border-border p-4 font-normal shadow-sm hover:border-primary peer-aria-checked:border-primary peer-aria-checked:ring-1 peer-aria-checked:ring-ring">
+                            <CheckCircle className="mr-2 hidden h-4 w-4 peer-aria-checked:inline" />
+                            Part-Time
+                          </FormLabel>
                         </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormItem className="flex space-x-1 space-y-1">
                           <FormControl>
-                            <RadioGroupItem value="internship" />
+                            <RadioGroupItem value="internship" className="peer hidden" />
                           </FormControl>
-                          <FormLabel className="font-normal">Internship</FormLabel>
+                          <FormLabel className="block cursor-pointer rounded-md border border-border p-4 font-normal shadow-sm hover:border-primary peer-aria-checked:border-primary peer-aria-checked:ring-1 peer-aria-checked:ring-ring">
+                            <CheckCircle className="mr-2 hidden h-4 w-4 peer-aria-checked:inline" />
+                            Internship
+                          </FormLabel>
                         </FormItem>
                       </RadioGroup>
                     </FormControl>
@@ -356,7 +405,7 @@ export const JobForm = () => {
             <CardHeader className="">
               <CardTitle>Content</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="grid grid-cols-1 gap-6">
               <Editor />
             </CardContent>
           </Card>
@@ -366,7 +415,7 @@ export const JobForm = () => {
             <CardHeader className="">
               <CardTitle>Salary Details</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="benefits"
@@ -425,28 +474,33 @@ export const JobForm = () => {
                   <FormItem className="space-y-3">
                     <FormLabel>Salary Type</FormLabel>
                     <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1"
-                      >
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                      <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-wrap">
+                        <FormItem className="flex space-x-1 space-y-1">
                           <FormControl>
-                            <RadioGroupItem value="hourly" />
+                            <RadioGroupItem value="hourly" className="peer hidden" />
                           </FormControl>
-                          <FormLabel className="font-normal">Hourly</FormLabel>
+                          <FormLabel className="block cursor-pointer rounded-md border border-border p-4 font-normal shadow-sm hover:border-primary peer-aria-checked:border-primary peer-aria-checked:ring-1 peer-aria-checked:ring-ring">
+                            <CheckCircle className="mr-2 hidden h-4 w-4 peer-aria-checked:inline" />
+                            Hourly
+                          </FormLabel>
                         </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormItem className="flex space-x-1 space-y-1">
                           <FormControl>
-                            <RadioGroupItem value="yearly" />
+                            <RadioGroupItem value="yearly" className="peer hidden" />
                           </FormControl>
-                          <FormLabel className="font-normal">Yearly</FormLabel>
+                          <FormLabel className="block cursor-pointer rounded-md border border-border p-4 font-normal shadow-sm hover:border-primary peer-aria-checked:border-primary peer-aria-checked:ring-1 peer-aria-checked:ring-ring">
+                            <CheckCircle className="mr-2 hidden h-4 w-4 peer-aria-checked:inline" />
+                            Yearly
+                          </FormLabel>
                         </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormItem className="flex space-x-1 space-y-1">
                           <FormControl>
-                            <RadioGroupItem value="project" />
+                            <RadioGroupItem value="project" className="peer hidden" />
                           </FormControl>
-                          <FormLabel className="font-normal">Project</FormLabel>
+                          <FormLabel className="block cursor-pointer rounded-md border border-border p-4 font-normal shadow-sm hover:border-primary peer-aria-checked:border-primary peer-aria-checked:ring-1 peer-aria-checked:ring-ring">
+                            <CheckCircle className="mr-2 hidden h-4 w-4 peer-aria-checked:inline" />
+                            Project
+                          </FormLabel>
                         </FormItem>
                       </RadioGroup>
                     </FormControl>
@@ -462,7 +516,7 @@ export const JobForm = () => {
                   <FormItem>
                     <FormLabel>Salary Range Min</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="Select a value" {...field} />
+                      <Input type="number" min={1} max={9999999} placeholder="Select a value" {...field} />
                     </FormControl>
                     <FormDescription>Minimum paid (USD)</FormDescription>
                     <FormMessage />
@@ -477,7 +531,7 @@ export const JobForm = () => {
                   <FormItem>
                     <FormLabel>Salary Range Max</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="Select a value" {...field} />
+                      <Input type="number" min={1} max={9999999} placeholder="Select a value" {...field} />
                     </FormControl>
                     <FormDescription>Maximum paid (USD)</FormDescription>
                     <FormMessage />
@@ -492,7 +546,7 @@ export const JobForm = () => {
             <CardHeader className="">
               <CardTitle>Company Details</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="companyTitle"
@@ -528,11 +582,13 @@ export const JobForm = () => {
                 name="companyLogo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Company Logo</FormLabel>
+                    <FormLabel>Company Logo URL</FormLabel>
                     <FormControl>
-                      <Input placeholder="TODO: Image" {...field} />
+                      <Input placeholder="https://mycompany.com/logo.svg" {...field} />
                     </FormControl>
-                    <FormDescription>Possibly a 1:1 aspect ratio without background</FormDescription>
+                    <FormDescription>
+                      From your website or a public Google Drive link. Possibly a 1:1 aspect ratio without background
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -562,61 +618,111 @@ export const JobForm = () => {
               <CardDescription>Last step to get your job published</CardDescription>
             </CardHeader>
             <CardContent>
-              <FormField
-                control={form.control}
-                name="companyInvoiceEntity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Company Invoice Entity</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Pier 418 OÜ" {...field} />
-                    </FormControl>
-                    <FormDescription>Legal name of the company to invoice</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="companyInvoiceEntity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Invoice Entity</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Pier 418 OÜ" {...field} />
+                      </FormControl>
+                      <FormDescription>Legal name of the company to invoice</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="companyInvoiceAddress"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Company Invoice Address</FormLabel>
-                    <FormControl>
-                      <Input placeholder="15551 Sepapaja 6, Tallinn, EE" {...field} />
-                    </FormControl>
-                    <FormDescription>Legal address</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="companyInvoiceAddress"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Invoice Address</FormLabel>
+                      <FormControl>
+                        <Input placeholder="15551 Sepapaja 6, Tallinn, EE" {...field} />
+                      </FormControl>
+                      <FormDescription>Legal address</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="companyInvoiceVAT"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Company Invoice VAT</FormLabel>
-                    <FormControl>
-                      <Input placeholder="EE12345678" {...field} />
-                    </FormControl>
-                    <FormDescription>VAT number or TAX ID (if you have)</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="companyInvoiceVAT"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Invoice VAT</FormLabel>
+                      <FormControl>
+                        <Input placeholder="EE12345678" {...field} />
+                      </FormControl>
+                      <FormDescription>VAT number or TAX ID (if you have)</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
+                <FormField
+                  control={form.control}
+                  name="companyInvoiceEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Invoice Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="Company Invoice Email" {...field} />
+                      </FormControl>
+                      <FormDescription>Email address for INVOICING purposes</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Separator className="my-4" />
               <FormField
                 control={form.control}
-                name="companyInvoiceEmail"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Company Invoice Email</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="Company Invoice Email" {...field} />
-                    </FormControl>
-                    <FormDescription>Email address for INVOICING purposes</FormDescription>
+                name="items"
+                render={() => (
+                  <FormItem className="">
+                    <div className="mb-4">
+                      <FormLabel className="text-base">Package & Promotions</FormLabel>
+                      <FormDescription>Pick the best package options for you.</FormDescription>
+                    </div>
+                    {items.map((item) => (
+                      <FormField
+                        key={item.id}
+                        control={form.control}
+                        name="items"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={item.id}
+                              className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow"
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(item.id)}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([...field.value, item.id])
+                                      : field.onChange(field.value?.filter((value) => value !== item.id));
+                                  }}
+                                />
+                              </FormControl>
+
+                              <div className="space-y-1 leading-none">
+                                <FormLabel className="text-sm font-normal">{item.label}</FormLabel>
+
+                                <FormDescription>
+                                  You can manage your mobile notifications in the mobile settings page.
+                                </FormDescription>
+                              </div>
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    ))}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -631,10 +737,10 @@ export const JobForm = () => {
             </CardHeader>
             <CardContent className="flex justify-between">
               <Button type="submit">
-                <Send /> Start Hiring
+                <Send className="mr-2" /> Start Hiring
               </Button>
               <Button variant="secondary">
-                <BookmarkIcon /> Save for later
+                <BookmarkIcon className="mr-2" /> Save for later
               </Button>
             </CardContent>
           </Card>

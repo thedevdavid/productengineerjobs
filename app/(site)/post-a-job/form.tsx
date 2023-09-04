@@ -403,7 +403,8 @@ export const JobForm = () => {
         <fieldset>
           <Card className={cn("rounded-md shadow-sm")}>
             <CardHeader className="">
-              <CardTitle>Content</CardTitle>
+              <CardTitle>Post Content</CardTitle>
+              <CardDescription>Detailed job description with requirements, and benefits</CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-6">
               <Editor />

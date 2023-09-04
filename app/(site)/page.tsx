@@ -10,7 +10,7 @@ export default async function Home() {
   return (
     <div className="pb-10">
       <Hero />
-      <div className="container mt-12 max-w-7xl">
+      <div className="container -mt-10 max-w-7xl">
         <div className="grid grid-cols-1 place-items-start justify-between gap-12 lg:grid-cols-3">
           <div className="col-span-1 w-full lg:col-span-3">
             <div className="mb-6 grid grid-flow-row gap-2">

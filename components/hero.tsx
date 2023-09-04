@@ -1,8 +1,9 @@
+import { Globe } from "./globe";
 import { Searchbar } from "./searchbar";
 
 const Hero = () => {
   return (
-    <div className="container flex max-w-7xl flex-col items-center justify-center text-center sm:py-20">
+    <div className="container flex max-w-7xl flex-col items-center justify-center text-center sm:pt-20">
       <h1 className="mb-2 flex flex-col items-center text-4xl font-bold leading-tight tracking-tight sm:flex-row md:text-6xl">
         Search
         <span className="relative h-[1em] w-64 overflow-hidden">
@@ -18,6 +19,7 @@ const Hero = () => {
       <div className="flex content-center items-center justify-center">
         <Searchbar />
       </div>
+      <Globe />
     </div>
   );
 };

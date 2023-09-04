@@ -1,8 +1,8 @@
 import { cachedClient } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 
+import { Job } from "@/types/Job";
 import { Page } from "@/types/Page";
-import { Post } from "@/types/Post";
 
 export async function getPages(): Promise<Page[]> {
   return cachedClient(
@@ -26,9 +26,9 @@ export async function getPage(slug: string): Promise<Page> {
     { slug }
   );
 }
-export async function getPosts(): Promise<Post[]> {
+export async function getPosts(): Promise<Job[]> {
   return cachedClient(
-    groq`*[_type == "post"] | order(publishedAt desc, _updatedAt desc){
+    groq`*[_type == "job"] | order(publishedAt desc, _updatedAt desc){
       _id,
       title,
       isPromoted,
@@ -40,14 +40,15 @@ export async function getPosts(): Promise<Post[]> {
       location,
       type,
       contract,
+      salaryType,
       salaryRange,
     }`
   );
 }
 
-export async function getPostsByCategory(category: string): Promise<Post[]> {
+export async function getPostsByCategory(category: string): Promise<Job[]> {
   return cachedClient(
-    groq`*[_type == "post" && references(*[_type == "category" && slug.current == $category]._id)] | order(publishedAt desc, _updatedAt desc) {
+    groq`*[_type == "job" && references(*[_type == "category" && slug.current == $category]._id)] | order(publishedAt desc, _updatedAt desc) {
       _id,
       publishedAt,
       title,
@@ -58,25 +59,25 @@ export async function getPostsByCategory(category: string): Promise<Post[]> {
   );
 }
 
-export const postsQuery = groq`*[_type == "post" && defined(slug.current)]{
+export const postsQuery = groq`*[_type == "job" && defined(slug.current)]{
   _id, title, slug
 }`;
 
-export const postQuery = groq`*[_type == "post" && slug.current == $slug][0]{
+export const postQuery = groq`*[_type == "job" && slug.current == $slug][0]{
   title, mainImage, content
 }`;
 
-export const postPathsQuery = groq`*[_type == "post" && defined(slug.current)][]{
-  "params": { "job": slug.current }
+export const postPathsQuery = groq`*[_type == "job" && defined(slug.current)][]{
+  "params": { "slug": slug.current }
 }`;
 
 export const pagePathsQuery = groq`*[_type == "page" && defined(slug.current)][]{
-  "params": { "page": slug.current }
+  "params": { "slug": slug.current }
 }`;
 
-export async function getPost(slug: string): Promise<Post> {
+export async function getPost(slug: string): Promise<Job> {
   return cachedClient(
-    groq`*[_type == "post" && slug.current == $slug][0]{
+    groq`*[_type == "job" && slug.current == $slug][0]{
         _id,
         title,
         isPromoted,
@@ -89,6 +90,7 @@ export async function getPost(slug: string): Promise<Post> {
         type,
         contract,
         applyUrl,
+        salaryType,
         salaryRange,
         content,
         tags[]->{
@@ -101,9 +103,9 @@ export async function getPost(slug: string): Promise<Post> {
   );
 }
 
-export async function getMorePosts(slug: string): Promise<Post[]> {
+export async function getMorePosts(slug: string): Promise<Job[]> {
   return cachedClient(
-    groq`*[_type == "post" && slug.current != $slug] | order(publishedAt desc, _updatedAt desc) [0...3] {
+    groq`*[_type == "job" && slug.current != $slug] | order(publishedAt desc, _updatedAt desc) [0...3] {
       _id,
       publishedAt,
       title,

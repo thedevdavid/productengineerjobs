@@ -1,7 +1,8 @@
 import type { PortableTextBlock, SanityDocument } from "sanity";
 
 import { countriesAndRegions } from "@/lib/countries-and-regions";
-import { Company } from './Company';
+
+import { Company } from "./Company";
 
 export interface Category extends SanityDocument {
   _type: "category";
@@ -26,8 +27,8 @@ export type SalaryRange = {
   max: number;
 };
 
-export interface Post extends SanityDocument {
-  _type: "post";
+export interface Job extends SanityDocument {
+  _type: "job";
   title: string;
   isPromoted: boolean;
   isVerified: boolean;
@@ -39,6 +40,7 @@ export interface Post extends SanityDocument {
   type: "remote" | "hybrid" | "onsite";
   contract: "full-time" | "part-time" | "contract" | "internship";
   applyUrl: string;
+  salaryType: "hourly" | "yearly" | "project";
   salaryRange: {
     salaryRangeHourly?: SalaryRange;
     salaryRangeYearly?: SalaryRange;

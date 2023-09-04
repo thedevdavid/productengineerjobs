@@ -1,11 +1,11 @@
-import { SubmitDocument } from "iconoir-react";
+import { EmptyPage } from "iconoir-react";
 import { defineField, defineType } from "sanity";
 
 export default defineType({
   name: "page",
   title: "Pages",
   type: "document",
-  icon: SubmitDocument,
+  icon: EmptyPage,
   fields: [
     defineField({
       name: "title",

@@ -49,6 +49,9 @@ export function MobileNav({ navigationLinks }: { navigationLinks: NavItem[] }) {
                 </MobileLink>
               )
             )}
+            <MobileLink href="/post-a-job" onOpenChange={setOpen}>
+              Post a Job
+            </MobileLink>
           </div>
         </ScrollArea>
       </SheetContent>

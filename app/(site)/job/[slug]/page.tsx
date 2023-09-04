@@ -52,5 +52,3 @@ export default async function JobPage({ params }: Props) {
     </div>
   );
 }
-
-export const revalidate = 60;

@@ -2,7 +2,7 @@ export const countriesAndRegions = [
   { title: "Worldwide", value: "Worldwide" },
   { title: "US", value: "US" },
   { title: "EU", value: "EU" },
-  { title: "EMEA", value: "EMEA" },
+  { title: "APAC", value: "APAC" },
   { title: "North America", value: "North America" },
   { title: "Americas", value: "Americas" },
   { title: "Europe", value: "Europe" },

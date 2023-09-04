@@ -2,9 +2,9 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { ArrowRight } from "iconoir-react";
 
-import { Post } from "@/types/Post";
+import { Job } from "@/types/Job";
 
-export default function Posts({ posts = [] }: { posts: Post[] }) {
+export default function Posts({ posts = [] }: { posts: Job[] }) {
   return (
     <section className="container mx-auto max-w-6xl">
       <div className="divide-y-2 divide-gray-100">

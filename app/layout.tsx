@@ -32,7 +32,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
       <body className="min-h-screen bg-gradient-to-b from-slate-100 to-white antialiased dark:bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 ">
-        <ThemeProvider attribute="class" defaultTheme={siteMetadata.defaultTheme} enableSystem={false}>
+        <ThemeProvider
+          storageKey="productengineerjobs-theme"
+          attribute="class"
+          defaultTheme={siteMetadata.defaultTheme}
+          enableSystem={false}
+        >
           <TooltipProvider>{children}</TooltipProvider>
           <BackTopButton />
           <Toaster />

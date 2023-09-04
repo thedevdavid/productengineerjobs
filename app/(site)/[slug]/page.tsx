@@ -4,11 +4,11 @@ import { PortableText } from "@portabletext/react";
 import { portableTextComponents } from "@/components/portable-text-components";
 
 type Props = {
-  params: { page: string };
+  params: { slug: string };
 };
 
 export default async function Page({ params }: Props) {
-  const page = await getPage(params.page);
+  const page = await getPage(params.slug);
 
   return (
     <div className="container mx-auto my-20 max-w-5xl">
@@ -18,5 +18,3 @@ export default async function Page({ params }: Props) {
     </div>
   );
 }
-
-export const revalidate = 60;

@@ -4,8 +4,8 @@ import { defineField, defineType } from "sanity";
 import { countriesAndRegions } from "@/lib/countries-and-regions";
 
 export default defineType({
-  name: "post",
-  title: "Posts",
+  name: "job",
+  title: "Job Posts",
   icon: EditPencil,
   type: "document",
   fields: [
@@ -74,6 +74,19 @@ export default defineType({
       name: "applyUrl",
       title: "Apply URL",
       type: "string",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "salaryType",
+      title: "Salary Type",
+      type: "string",
+      options: {
+        list: [
+          { title: "Hourly", value: "hourly" },
+          { title: "Yearly", value: "yearly" },
+          { title: "Project", value: "project" },
+        ],
+      },
       validation: (rule) => rule.required(),
     }),
     defineField({

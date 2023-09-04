@@ -1,4 +1,4 @@
-import { LinkProps } from 'next/link';
+import { LinkProps } from "next/link";
 
 export interface PostHeading {
   heading: number;
@@ -23,9 +23,9 @@ export interface MobileLinkProps extends LinkProps {
   className?: string;
 }
 
-export type AnalyticsProvider = 'umami' | 'vercel' | 'plausible' | 'google';
+export type AnalyticsProvider = "umami" | "vercel" | "plausible" | "google";
 
-export type NewsletterProvider = 'convertkit' | 'substack' | 'mailerlite';
+export type NewsletterProvider = "convertkit" | "substack" | "mailerlite";
 
 export type SiteMetaData = {
   title: {
@@ -37,7 +37,7 @@ export type SiteMetaData = {
   newsletterProvider?: NewsletterProvider;
   newsletterUrl?: string;
   analyticsProvider?: AnalyticsProvider;
-  defaultTheme: 'light' | 'dark' | 'system';
+  defaultTheme: "light" | "dark" | "system";
   activeAnnouncement: boolean;
   postsPerPage: number;
   postsOnHomePage: number;

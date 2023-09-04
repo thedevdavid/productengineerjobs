@@ -11,8 +11,8 @@ export const size = {
 export const contentType = "image/png";
 
 // Image generation
-export default async function Image({ params }: { params: { page: string } }) {
-  const post = await getPage(params.page);
+export default async function Image({ params }: { params: { slug: string } }) {
+  const post = await getPage(params.slug);
 
   if (!post) {
     return {};

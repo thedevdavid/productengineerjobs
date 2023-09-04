@@ -2,7 +2,7 @@ import { Pencil2Icon } from "@radix-ui/react-icons";
 import { formatDistance } from "date-fns";
 import { Calendar, Dollar, Handbag, Link, OpenInBrowser, WhiteFlag } from "iconoir-react";
 
-import { Post } from "@/types/Post";
+import { Job } from "@/types/Job";
 import { BASE_URL } from "@/lib/metadata";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -14,10 +14,42 @@ import { Separator } from "@/components/ui/separator";
 import { SocialShare } from "@/components/social-share";
 
 type CardProps = React.ComponentProps<typeof Card> & {
-  job: Post;
+  job: Job;
 };
 
 export function Sidebar({ className, job, ...props }: CardProps) {
+  const getSalaryRange = () => {
+    let min: number | undefined = 0;
+    let max: number | undefined = 0;
+    switch (job.salaryType) {
+      case "hourly":
+        min = job.salaryRange.salaryRangeHourly?.min;
+        max = job.salaryRange.salaryRangeHourly?.max;
+        break;
+      case "project":
+        min = job.salaryRange.salaryRangeProject?.min;
+        max = job.salaryRange.salaryRangeProject?.max;
+        break;
+      case "yearly":
+        min = job.salaryRange.salaryRangeYearly?.min;
+        max = job.salaryRange.salaryRangeYearly?.max;
+        break;
+
+      default:
+        min = job.salaryRange.salaryRangeHourly?.min;
+        max = job.salaryRange.salaryRangeHourly?.max;
+        break;
+    }
+    return (
+      <p>
+        {`${new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(
+          min as number
+        )}-${new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(
+          max as number
+        )}`}
+      </p>
+    );
+  };
   return (
     <>
       <Card className={cn("mb-4 rounded-md shadow-sm", className)} {...props}>
@@ -40,7 +72,7 @@ export function Sidebar({ className, job, ...props }: CardProps) {
             </Badge>
             <Badge variant="secondary" className="flex items-center text-sm text-muted-foreground">
               <Dollar className="mr-1.5 h-5 w-5 flex-shrink-0 text-muted-foreground" aria-hidden="true" />
-              {`$${job.salaryRange.salaryRangeHourly?.min}-$${job.salaryRange.salaryRangeHourly?.max}`}
+              {getSalaryRange()}/{job.salaryType}
             </Badge>
             <Badge variant="secondary" className="flex items-center text-sm text-muted-foreground">
               <Calendar className="mr-1.5 h-5 w-5 flex-shrink-0 text-muted-foreground" aria-hidden="true" />

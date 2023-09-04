@@ -63,7 +63,7 @@ export function Navigation({ navigationLinks }: { navigationLinks: NavItem[] }) 
                     d="M79 222V168H133H156H258V71H171V17H258H312V71V168V222H258H241H165H133H79ZM79 319V370V373H133V319H79ZM171 319V373H312V370V319H258H241H171ZM133 17H79V71H133V17Z"
                   />
                 </svg>
-                <span>ProductEngineerJobs.co</span>
+                <span className="hidden md:inline">ProductEngineerJobs.co</span>
               </Link>
             </div>
             <div className="order-3 sm:order-2 sm:ml-auto">
@@ -75,7 +75,7 @@ export function Navigation({ navigationLinks }: { navigationLinks: NavItem[] }) 
               </nav>
             </div>
             <div className="order-2 flex w-full items-center gap-2 sm:order-3 sm:w-fit">
-              <Button asChild>
+              <Button asChild className="hidden md:flex">
                 <Link href="/post-a-job">Post a Job</Link>
               </Button>
               {/* <ModeToggle /> */}

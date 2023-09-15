@@ -11,12 +11,15 @@ interface RootLayoutProps {
 
 export default async function RootLayout({ children }: RootLayoutProps) {
   const pages = await getPages();
-  const content = pages.map((page) => {
-    return {
-      title: page.title,
-      href: page.slug,
-    };
-  });
+
+  const content = pages
+    .filter((page) => page.slug.startsWith("for"))
+    .map((page) => {
+      return {
+        title: page.title,
+        href: page.slug,
+      };
+    });
   const navigationLinks: NavItem[] = [
     {
       title: "What's a Product Engineer?",

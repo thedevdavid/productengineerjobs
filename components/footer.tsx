@@ -2,35 +2,36 @@ import Link from "next/link";
 
 const navigation = {
   jobs: [
-    { name: "Product Engineer", href: "#" },
-    { name: "Platform Engineer", href: "#" },
-    { name: "Sounds Like...", href: "#" },
+    { name: "Product Engineer", href: "/position/product-engineer" },
+    { name: "Platform Engineer", href: "/position/platform-engineer" },
+    { name: "Sounds Like...", href: "/position/sounds-like" },
   ],
   companies: [
-    { name: "Post a Job", href: "#" },
-    { name: "Product Engineering for Startups & SMBs", href: "#" },
-    { name: "Product Engineering for Enterprise", href: "#" },
+    { name: "Post a Job", href: "/post-a-job" },
+    { name: "Product Engineering for Startups & SMBs", href: "/for-companies" },
+    { name: "Product Engineering for Enterprise", href: "/for-enterprise" },
   ],
   location: [
-    { name: "US", href: "#" },
-    { name: "Europe", href: "#" },
-    { name: "APAC", href: "#" },
-    { name: "Worldwide", href: "#" },
+    { name: "US", href: "/location/us" },
+    { name: "Europe", href: "/location/europe" },
+    { name: "APAC", href: "/location/apac" },
+    { name: "EU", href: "/location/eu" },
+    { name: "Worldwide", href: "/location/worldwide" },
   ],
   contract: [
-    { name: "Full-Time", href: "#" },
-    { name: "Part-Time", href: "#" },
-    { name: "Contract", href: "#" },
-    { name: "Internship", href: "#" },
+    { name: "Full-Time", href: "/contract/full-time" },
+    { name: "Part-Time", href: "/contract/part-time" },
+    { name: "Contract", href: "/contract/contract" },
+    { name: "Internship", href: "/contract/internship" },
   ],
   type: [
-    { name: "Remote", href: "#" },
-    { name: "Hybrid", href: "#" },
-    { name: "On-Site", href: "#" },
+    { name: "Remote", href: "/type/remote" },
+    { name: "Hybrid", href: "/type/hybrid" },
+    { name: "On-Site", href: "/type/on-site" },
   ],
   legal: [
-    { name: "Privacy", href: "#" },
-    { name: "Terms", href: "#" },
+    { name: "Privacy", href: "/privacy-policy" },
+    { name: "Terms", href: "/terms-of-use" },
   ],
 };
 

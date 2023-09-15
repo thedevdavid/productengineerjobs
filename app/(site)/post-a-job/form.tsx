@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BookmarkIcon } from "@radix-ui/react-icons";
 import { ArrowUnionVertical, Check, CheckCircle, Send } from "iconoir-react";
@@ -7,94 +8,94 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { countriesAndRegions } from "@/lib/countries-and-regions";
+import { defaultEditorContent } from "@/lib/default-editor-content";
+import useLocalStorage from "@/lib/hooks/use-local-storage";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
+import { Editor } from "@/components/editor";
 
-import Editor from "./editor";
+export type PackageOption = {
+  id: string;
+  label: string;
+  description: string;
+};
 
-const items = [
+const packageOptions: PackageOption[] = [
   {
-    id: "recents",
-    label: "Recents",
+    id: "default",
+    label: "30 day job post - $49 / month (package base, required)",
+    description: "Automatically updating job post every 30 days.",
   },
   {
-    id: "home",
-    label: "Home",
+    id: "companyVerification",
+    label: "Company Verification (+$99)",
+    description: "Get a verified company badge on all your company job post.",
   },
   {
-    id: "applications",
-    label: "Applications",
+    id: "promoted",
+    label: "Highlighted Post (+$19)",
+    description: "Get the job post highlighted on the homepage for 30 days with a special badge & background color.",
   },
   {
-    id: "desktop",
-    label: "Desktop",
+    id: "emailBlast",
+    label: "Email Blast (+$19)",
+    description: "Send an immediate email to 512 product engineers looking for job.",
   },
-  {
-    id: "downloads",
-    label: "Downloads",
-  },
-  {
-    id: "documents",
-    label: "Documents",
-  },
-] as const;
-
-const formSchema = z.object({
-  title: z.string().min(1).max(255),
-  category: z.string(),
-  tags: z.string(),
-  location: z.string(),
-  type: z.string(),
-  contract: z.string(),
-  benefits: z.string(),
-  salaryType: z.enum(["hourly", "project", "yearly"]),
-  salaryMin: z.coerce.number(),
-  salaryMax: z.number().gte(1),
-  applyUrl: z.string().min(1).max(255),
-  companyTitle: z.string().min(1).max(255),
-  companyTwitter: z.string().min(1).max(255),
-  companyLogo: z.string().min(1).max(255),
-  companyPrivateEmail: z.string().email().min(1).max(255),
-  companyInvoiceEntity: z.string().min(1).max(255),
-  companyInvoiceAddress: z.string().min(1).max(255),
-  companyInvoiceVAT: z.string().min(1).optional(),
-  companyInvoiceEmail: z.string().email().min(1).max(255),
-  items: z.array(z.string()).refine((value) => value.some((item) => item), {
-    message: "You have to select at least one item.",
-  }),
-});
-
-const tags = [
-  { label: "Next.js", value: "nextjs" },
-  { label: "React", value: "react" },
-  { label: "React Native", value: "react-native" },
-  { label: "Vercel", value: "vercel" },
-  { label: "Tailwind.css", value: "tailwindcss" },
-  { label: "SwiftUI", value: "swiftui" },
-  { label: "Flutter", value: "flutter" },
-  { label: "Supabase", value: "supabase" },
-  { label: "Firebase", value: "firebase" },
-  { label: "AWS", value: "aws" },
-  { label: "UX", value: "ux" },
-  { label: "Product Design", value: "product-design" },
 ];
+
+const formSchema = z
+  .object({
+    title: z.string().min(1).max(255),
+    category: z.string(),
+    tags: z.string(),
+    location: z.string(),
+    type: z.string(),
+    contract: z.string(),
+    applyUrl: z.string().min(1).max(255),
+    benefits: z.string(),
+    salaryType: z.enum(["hourly", "project", "yearly"]),
+    salaryMin: z.coerce.number().gte(1).positive(),
+    salaryMax: z.coerce.number().gte(1).positive(),
+    companyName: z.string().min(1).max(255),
+    companyTwitter: z.string().min(1).max(255),
+    companyLogo: z.string().min(1).max(255),
+    companyPrivateEmail: z.string().email().min(1).max(255),
+    companyInvoiceEntity: z.string().min(1).max(255),
+    companyInvoiceAddress: z.string().min(1).max(255),
+    companyInvoiceVAT: z.string().min(1).optional(),
+    companyInvoiceEmail: z.string().email().min(1).max(255),
+    packageOptions: z.array(z.string()).refine((value) => value.some((item) => item), {
+      message: "You have to select the default item.",
+    }),
+  })
+  .partial({ companyTwitter: true, companyLogo: true });
+
 const benefits = [
   { label: "Unlimited PTO", value: "unlimited-pto" },
   { label: "401(k)", value: "401k" },
   { label: "Async", value: "async" },
   { label: "4 Day Workweek", value: "4-day-workweek" },
 ];
-export const JobForm = () => {
+
+type JobFormProps = {
+  tags: {
+    label: string;
+    value: string;
+  }[];
+};
+
+export const JobForm = ({ tags }: JobFormProps) => {
+  const [saveStatus, setSaveStatus] = useState("Saved");
+  const [content, setContent] = useLocalStorage("productengineerjobs_jobpost__content", "");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -102,10 +103,10 @@ export const JobForm = () => {
       type: "remote",
       category: "product-engineer",
       contract: "contract",
-      salaryMin: 1,
-      salaryMax: 1,
+      salaryMin: 25,
+      salaryMax: 65,
       applyUrl: "",
-      companyTitle: "",
+      companyName: "",
       companyTwitter: "",
       companyLogo: "",
       companyPrivateEmail: "",
@@ -113,16 +114,22 @@ export const JobForm = () => {
       companyInvoiceAddress: "",
       companyInvoiceVAT: "",
       companyInvoiceEmail: "",
-      items: ["recents", "home"],
+      packageOptions: ["default"],
     },
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    const res = await fetch("/api/job-submission", {
+      method: "POST",
+      body: JSON.stringify({ ...data, content: content }),
+    });
+    const result = await res.json();
+
     toast({
       title: "You submitted the following values:",
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+          <code className="text-white">{JSON.stringify(result, null, 2)}</code>
         </pre>
       ),
     });
@@ -407,7 +414,19 @@ export const JobForm = () => {
               <CardDescription>Detailed job description with requirements, and benefits</CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-6">
-              <Editor />
+              <Editor
+                defaultValue={defaultEditorContent}
+                onUpdate={() => {
+                  setSaveStatus("Unsaved");
+                }}
+                onDebouncedUpdate={() => {
+                  setSaveStatus("Saving...");
+                  // Simulate a delay in saving.
+                  setTimeout(() => {
+                    setSaveStatus("Saved");
+                  }, 500);
+                }}
+              />
             </CardContent>
           </Card>
         </fieldset>
@@ -550,7 +569,7 @@ export const JobForm = () => {
             <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
-                name="companyTitle"
+                name="companyName"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Company Name</FormLabel>
@@ -683,27 +702,29 @@ export const JobForm = () => {
               <Separator className="my-4" />
               <FormField
                 control={form.control}
-                name="items"
+                name="packageOptions"
                 render={() => (
                   <FormItem className="">
-                    <div className="mb-4">
-                      <FormLabel className="text-base">Package & Promotions</FormLabel>
+                    <div className="mb-6">
+                      <FormLabel className="text-base">Package & Add-ons</FormLabel>
                       <FormDescription>Pick the best package options for you.</FormDescription>
                     </div>
-                    {items.map((item) => (
+
+                    {packageOptions.map((item) => (
                       <FormField
                         key={item.id}
                         control={form.control}
-                        name="items"
+                        name="packageOptions"
                         render={({ field }) => {
                           return (
                             <FormItem
                               key={item.id}
-                              className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow"
+                              className="flex flex-row items-start space-x-3 space-y-0 rounded border p-4 shadow"
                             >
                               <FormControl>
                                 <Checkbox
-                                  checked={field.value?.includes(item.id)}
+                                  checked={item.id === "default" || field.value?.includes(item.id)}
+                                  disabled={item.id === "default"}
                                   onCheckedChange={(checked) => {
                                     return checked
                                       ? field.onChange([...field.value, item.id])
@@ -713,11 +734,9 @@ export const JobForm = () => {
                               </FormControl>
 
                               <div className="space-y-1 leading-none">
-                                <FormLabel className="text-sm font-normal">{item.label}</FormLabel>
+                                <FormLabel className="text-sm font-medium">{item.label}</FormLabel>
 
-                                <FormDescription>
-                                  You can manage your mobile notifications in the mobile settings page.
-                                </FormDescription>
+                                <FormDescription>{item.description}</FormDescription>
                               </div>
                             </FormItem>
                           );
@@ -729,6 +748,13 @@ export const JobForm = () => {
                 )}
               />
             </CardContent>
+            <CardFooter className="text-sm text-muted-foreground">
+              Job posts are a) published for 30 days, b) cannot be refunded, and c) renew automatically after 30 days
+              unless you 1) disable auto renew after posting on the edit page, or 2) close your job post on the edit
+              link. We send a reminder 7 days by email before renewing. Renewing is the same price as the original job
+              post for 30 days + add-ons. Automatic renewals can be self-refunded within 7 days after renewing with the
+              link in the email.
+            </CardFooter>
           </Card>
         </fieldset>
         <fieldset>

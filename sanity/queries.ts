@@ -1,8 +1,24 @@
 import { cachedClient } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 
-import { Job } from "@/types/Job";
+import { Job, Tag } from "@/types/Job";
 import { Page } from "@/types/Page";
+
+const jobPostFields = `
+_id,
+title,
+isPromoted,
+isVerified,
+publishedAt,
+"slug": slug.current,
+category->{title, slug},
+company->{name, slug, logo, twitter},
+location,
+type,
+contract,
+salaryType,
+salaryRange,
+`;
 
 export async function getPages(): Promise<Page[]> {
   return cachedClient(
@@ -26,36 +42,21 @@ export async function getPage(slug: string): Promise<Page> {
     { slug }
   );
 }
-export async function getPosts(): Promise<Job[]> {
+
+export async function getTags(): Promise<Tag[]> {
   return cachedClient(
-    groq`*[_type == "job"] | order(publishedAt desc, _updatedAt desc){
-      _id,
+    groq`*[_type == "tag"] | order(publishedAt desc, _updatedAt desc){
       title,
-      isPromoted,
-      isVerified,
-      publishedAt,
-      "slug": slug.current,
-      category->{title, slug},
-      company->{name, slug, logo, twitter},
-      location,
-      type,
-      contract,
-      salaryType,
-      salaryRange,
+      slug
     }`
   );
 }
 
-export async function getPostsByCategory(category: string): Promise<Job[]> {
+export async function getPosts(): Promise<Job[]> {
   return cachedClient(
-    groq`*[_type == "job" && references(*[_type == "category" && slug.current == $category]._id)] | order(publishedAt desc, _updatedAt desc) {
-      _id,
-      publishedAt,
-      title,
-      category->{title, slug},
-      "slug": slug.current
-    }`,
-    { category }
+    groq`*[_type == "job"] | order(publishedAt desc, _updatedAt desc){
+      ${jobPostFields}
+    }`
   );
 }
 
@@ -78,7 +79,7 @@ export const pagePathsQuery = groq`*[_type == "page" && defined(slug.current)][]
 export async function getPost(slug: string): Promise<Job> {
   return cachedClient(
     groq`*[_type == "job" && slug.current == $slug][0]{
-        _id,
+        _id,x
         title,
         isPromoted,
         isVerified,
@@ -113,5 +114,51 @@ export async function getMorePosts(slug: string): Promise<Job[]> {
       "slug": slug.current
     }`,
     { slug }
+  );
+}
+
+// JOB POST FILTERED
+
+export async function getPostsByCategory(category: string): Promise<Job[]> {
+  return cachedClient(
+    groq`*[_type == "job" && references(*[_type == "category" && slug.current == $category]._id)] | order(publishedAt desc, _updatedAt desc) {
+      ${jobPostFields}
+    }`,
+    { category }
+  );
+}
+
+export async function getPostsByType(type: string): Promise<Job[]> {
+  return cachedClient(
+    groq`*[_type == "job" && type == $type] | order(publishedAt desc, _updatedAt desc) {
+      ${jobPostFields}
+    }`,
+    { type }
+  );
+}
+
+export async function getPostsByContract(contract: string): Promise<Job[]> {
+  return cachedClient(
+    groq`*[_type == "job" && contract == $contract] | order(publishedAt desc, _updatedAt desc) {
+      ${jobPostFields}
+    }`,
+    { contract }
+  );
+}
+
+export async function getPostsByVerifiedCompaniesOnly(): Promise<Job[]> {
+  return cachedClient(
+    groq`*[_type == "job" && isVerified == true] | order(publishedAt desc, _updatedAt desc) {
+      ${jobPostFields}
+    }`
+  );
+}
+
+export async function getPostsByLocation(country: string): Promise<Job[]> {
+  return cachedClient(
+    groq`*[_type == "job" && location == $country] | order(publishedAt desc, _updatedAt desc) {
+      ${jobPostFields}
+    }`,
+    { country }
   );
 }

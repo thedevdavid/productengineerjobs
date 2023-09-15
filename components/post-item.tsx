@@ -43,7 +43,7 @@ const PostItem = ({ post }: { post: Job }) => {
   };
 
   return (
-    <Link href={`/job/${post.slug}`}>
+    <Link href={`/job/${post.slug}`} className="w-full">
       <Card className={cn("relative rounded-md shadow-sm", post.isPromoted && "bg-primary/20")}>
         <CardHeader className="">
           <CardTitle>{post.title}</CardTitle>

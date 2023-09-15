@@ -31,7 +31,7 @@ export const BackTopButton = () => {
 
   return (
     <Button
-      variant="default"
+      variant="secondary"
       size="icon"
       aria-label="Scroll To Top"
       type="button"

@@ -31,7 +31,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
-      <body className="min-h-screen bg-gradient-to-b from-slate-100 to-white antialiased dark:bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 ">
+      <body className="min-h-screen bg-gradient-to-b from-slate-100 to-white antialiased dark:bg-gradient-to-b dark:from-gray-900 dark:to-gray-800">
         <ThemeProvider
           storageKey="productengineerjobs-theme"
           attribute="class"

@@ -22,7 +22,7 @@ export default async function JobPage({ params }: Props) {
             alt={job.company.name}
             width={100}
             height={100}
-            className="mr-2 h-8 w-8 rounded-md bg-foreground/70 p-1"
+            className="mr-2 h-8 w-8 rounded-xl bg-foreground/20 p-1"
           />
           <h2>
             {job.company.name} is hiring a {job.type}
@@ -35,7 +35,12 @@ export default async function JobPage({ params }: Props) {
             {job.tags.map((skill) => (
               <li
                 key={skill._id}
-                className="inline-flex items-center rounded-md border border-transparent bg-secondary px-2.5 py-0.5 text-xs font-semibold text-secondary-foreground transition-colors hover:bg-secondary/80 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                style={{
+                  borderColor: `${skill.color}20`,
+                  backgroundColor: `${skill.color}30`,
+                  color: skill.color,
+                }}
+                className="inline-flex cursor-default items-center rounded-md border border-transparent bg-secondary px-2.5 py-0.5 text-xs font-semibold text-secondary-foreground saturate-50 transition transition-colors duration-100 hover:bg-secondary/80 hover:saturate-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
                 {skill.title}
               </li>

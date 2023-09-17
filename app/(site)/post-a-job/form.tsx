@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { MultiSelectOptions } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BookmarkIcon } from "@radix-ui/react-icons";
 import { ArrowUnionVertical, Check, CheckCircle, Send } from "iconoir-react";
-import { useForm } from "react-hook-form";
+import { Field, useForm } from "react-hook-form";
 import * as z from "zod";
 
+import { Benefit, Tag } from "@/types/Job";
 import { countriesAndRegions } from "@/lib/countries-and-regions";
+import { formSchema } from "@/lib/db";
 import { defaultEditorContent } from "@/lib/default-editor-content";
 import useLocalStorage from "@/lib/hooks/use-local-storage";
 import { cn } from "@/lib/utils";
@@ -22,6 +25,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
 import { Editor } from "@/components/editor";
+import { MultiSelect } from "@/components/multi-select";
+
+// import { SavedJobsDialog } from "@/components/saved-jobs-dialog";
 
 export type PackageOption = {
   id: string;
@@ -52,50 +58,15 @@ const packageOptions: PackageOption[] = [
   },
 ];
 
-const formSchema = z
-  .object({
-    title: z.string().min(1).max(255),
-    category: z.string(),
-    tags: z.string(),
-    location: z.string(),
-    type: z.string(),
-    contract: z.string(),
-    applyUrl: z.string().min(1).max(255),
-    benefits: z.string(),
-    salaryType: z.enum(["hourly", "project", "yearly"]),
-    salaryMin: z.coerce.number().gte(1).positive(),
-    salaryMax: z.coerce.number().gte(1).positive(),
-    companyName: z.string().min(1).max(255),
-    companyTwitter: z.string().min(1).max(255),
-    companyLogo: z.string().min(1).max(255),
-    companyPrivateEmail: z.string().email().min(1).max(255),
-    companyInvoiceEntity: z.string().min(1).max(255),
-    companyInvoiceAddress: z.string().min(1).max(255),
-    companyInvoiceVAT: z.string().min(1).optional(),
-    companyInvoiceEmail: z.string().email().min(1).max(255),
-    packageOptions: z.array(z.string()).refine((value) => value.some((item) => item), {
-      message: "You have to select the default item.",
-    }),
-  })
-  .partial({ companyTwitter: true, companyLogo: true });
-
-const benefits = [
-  { label: "Unlimited PTO", value: "unlimited-pto" },
-  { label: "401(k)", value: "401k" },
-  { label: "Async", value: "async" },
-  { label: "4 Day Workweek", value: "4-day-workweek" },
-];
-
 type JobFormProps = {
-  tags: {
-    label: string;
-    value: string;
-  }[];
+  tags: MultiSelectOptions[];
+  benefits: MultiSelectOptions[];
 };
 
-export const JobForm = ({ tags }: JobFormProps) => {
-  const [saveStatus, setSaveStatus] = useState("Saved");
-  const [content, setContent] = useLocalStorage("productengineerjobs_jobpost__content", "");
+export const JobForm = ({ tags, benefits }: JobFormProps) => {
+  const [saveStatus, setSaveStatus] = useState(false);
+  const [content] = useLocalStorage("productengineerjobs_jobpost__content", "");
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -118,6 +89,62 @@ export const JobForm = ({ tags }: JobFormProps) => {
     },
   });
 
+  // async function onSavedJobsDialogOpen(isOpen: boolean) {
+  //   console.log("modal open ", isOpen);
+  // }
+
+  // const handleLoad = async (id: number) => {
+  //   try {
+  //     await db.jobs.where("id").equals(id).toArray();
+  //   } catch (error) {
+  //     console.log("load indexeddb error ", error);
+  //   }
+  // };
+
+  // async function onSave() {
+  //   const now = Date.now();
+  //   setSaveStatus("Saving...");
+
+  //   const data: z.infer<typeof formSchema> = form.getValues();
+
+  //   try {
+  //     const id = await db.jobs.add({
+  //       id: now,
+  //       date: now,
+  //       ...data,
+  //     });
+
+  //     console.log("indexeddb success ", id);
+  //   } catch (error) {
+  //     console.log("indexdb error", error);
+  //   }
+  //   // Simulate a delay in saving.
+  //   setTimeout(() => {
+  //     setSaveStatus("Saved");
+  //   }, 500);
+  //   toast({
+  //     title: "Job post saved for later",
+  //     description: (
+  //       <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+  //         <code className="text-white">nice</code>
+  //       </pre>
+  //     ),
+  //   });
+  // }
+
+  const onSelectMulti = (item: MultiSelectOptions[], formField: "tags" | "benefits") => {
+    form.setValue(formField, item);
+    // const currentItems = form.getValues(formField);
+    // if (currentItems.includes(item.value)) {
+    //   form.setValue(
+    //     formField,
+    //     currentItems.filter((i) => i !== item.value)
+    //   );
+    // } else {
+    //   form.setValue(formField, [...currentItems, item.value]);
+    // }
+  };
+
   async function onSubmit(data: z.infer<typeof formSchema>) {
     const res = await fetch("/api/job-submission", {
       method: "POST",
@@ -137,6 +164,13 @@ export const JobForm = ({ tags }: JobFormProps) => {
 
   return (
     <Form {...form}>
+      <div className="mb-8 flex flex-row items-center justify-between">
+        <div>
+          <h1 className="text-xl font-bold">Get your position listed now</h1>
+          <p className="text-sm text-muted-foreground">It takes less than 10 minutes</p>
+        </div>
+        {/* <SavedJobsDialog handleLoad={handleLoad} onOpenChange={onSavedJobsDialogOpen} /> */}
+      </div>
       <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <fieldset>
           <Card className={cn("rounded-md shadow-sm")}>
@@ -201,20 +235,23 @@ export const JobForm = ({ tags }: JobFormProps) => {
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Tags</FormLabel>
-                    <Popover>
+                    <FormControl>
+                      <MultiSelect options={tags} onSelect={onSelectMulti} formField="tags" />
+                    </FormControl>
+                    {/* <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
                             variant="outline"
                             role="combobox"
-                            className={cn("w-[200px] justify-between", !field.value && "text-muted-foreground")}
+                            className={cn("max-w-[256px] justify-between", !field.value && "text-muted-foreground")}
                           >
                             {field.value ? tags.find((item) => item.value === field.value)?.label : "Select item"}
                             <ArrowUnionVertical className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
-                      <PopoverContent className="w-[200px] p-0">
+                      <PopoverContent className="w-[256px] p-0">
                         <Command>
                           <CommandInput placeholder="Search tags..." />
                           <CommandEmpty>No tags found.</CommandEmpty>
@@ -239,7 +276,7 @@ export const JobForm = ({ tags }: JobFormProps) => {
                           </CommandGroup>
                         </Command>
                       </PopoverContent>
-                    </Popover>
+                    </Popover> */}
                     <FormDescription>Skills, technologies, stack, platform, etc.</FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -257,7 +294,7 @@ export const JobForm = ({ tags }: JobFormProps) => {
                           <Button
                             variant="outline"
                             role="combobox"
-                            className={cn("w-[200px] justify-between", !field.value && "text-muted-foreground")}
+                            className={cn("max-w-[256px] justify-between", !field.value && "text-muted-foreground")}
                           >
                             {field.value
                               ? countriesAndRegions.find((item) => item.value === field.value)?.title
@@ -266,7 +303,7 @@ export const JobForm = ({ tags }: JobFormProps) => {
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
-                      <PopoverContent className="w-[200px] p-0">
+                      <PopoverContent className="w-[256px] p-0">
                         <Command>
                           <CommandInput placeholder="Search location..." />
                           <CommandEmpty>No location found.</CommandEmpty>
@@ -395,11 +432,11 @@ export const JobForm = ({ tags }: JobFormProps) => {
                 name="applyUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Application URL</FormLabel>
+                    <FormLabel>How to apply</FormLabel>
                     <FormControl>
                       <Input placeholder="https://mycompany.com/apply" {...field} />
                     </FormControl>
-                    <FormDescription>The website for applicants to send their data</FormDescription>
+                    <FormDescription>Email address or application form URL</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -416,14 +453,13 @@ export const JobForm = ({ tags }: JobFormProps) => {
             <CardContent className="grid grid-cols-1 gap-6">
               <Editor
                 defaultValue={defaultEditorContent}
+                storageKey="productengineerjobs_jobpost__content"
                 onUpdate={() => {
-                  setSaveStatus("Unsaved");
+                  setSaveStatus(false);
                 }}
                 onDebouncedUpdate={() => {
-                  setSaveStatus("Saving...");
-                  // Simulate a delay in saving.
                   setTimeout(() => {
-                    setSaveStatus("Saved");
+                    setSaveStatus(true);
                   }, 500);
                 }}
               />
@@ -431,7 +467,7 @@ export const JobForm = ({ tags }: JobFormProps) => {
           </Card>
         </fieldset>
         <fieldset>
-          <Card className={cn("rounded-md shadow-sm")}>
+          <Card className={cn("h-auto flex-grow rounded-md shadow-sm")}>
             <CardHeader className="">
               <CardTitle>Salary Details</CardTitle>
             </CardHeader>
@@ -442,7 +478,8 @@ export const JobForm = ({ tags }: JobFormProps) => {
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Benefits</FormLabel>
-                    <Popover>
+                    <MultiSelect options={benefits} formField="benefits" onSelect={onSelectMulti} />
+                    {/* <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
@@ -480,7 +517,7 @@ export const JobForm = ({ tags }: JobFormProps) => {
                           </CommandGroup>
                         </Command>
                       </PopoverContent>
-                    </Popover>
+                    </Popover> */}
                     <FormDescription>The convincing stuff</FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -748,30 +785,62 @@ export const JobForm = ({ tags }: JobFormProps) => {
                 )}
               />
             </CardContent>
-            <CardFooter className="text-sm text-muted-foreground">
-              Job posts are a) published for 30 days, b) cannot be refunded, and c) renew automatically after 30 days
-              unless you 1) disable auto renew after posting on the edit page, or 2) close your job post on the edit
-              link. We send a reminder 7 days by email before renewing. Renewing is the same price as the original job
-              post for 30 days + add-ons. Automatic renewals can be self-refunded within 7 days after renewing with the
-              link in the email.
+            <CardFooter className="flex-col items-stretch space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Job posts are a) published for 30 days, b) cannot be refunded, and c) renew automatically after 30 days
+                unless you 1) disable auto renew after posting on the edit page, or 2) close your job post on the edit
+                link. We send a reminder 7 days by email before renewing. Renewing is the same price as the original job
+                post for 30 days + add-ons. Automatic renewals can be self-refunded within 7 days after renewing with
+                the link in the email.
+              </p>
             </CardFooter>
           </Card>
         </fieldset>
-        <fieldset>
-          <Card className={cn("rounded-md shadow-sm")}>
-            <CardHeader className="">
-              <CardTitle>Ready, set, go!</CardTitle>
-            </CardHeader>
-            <CardContent className="flex justify-between">
-              <Button type="submit">
-                <Send className="mr-2" /> Start Hiring
-              </Button>
-              <Button variant="secondary">
+        <Card
+          className={cn(
+            " rounded-md border-foreground/25 bg-background/95 pt-6 shadow-[0_3px_10px_rgb(0,0,0,0.2)] supports-[backdrop-filter]:bg-background/60 supports-[backdrop-filter]:bg-clip-padding supports-[backdrop-filter]:backdrop-blur"
+          )}
+        >
+          <CardContent className="mx-auto flex max-w-5xl flex-row items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">Almost done...</p>
+            </div>
+            <Button type="submit" disabled={form.formState.isSubmitting && form.formState.isSubmitted}>
+              {form.formState.isSubmitting ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="1em"
+                  height="1em"
+                  className="mr-2 h-4 w-4 animate-spin"
+                  viewBox="0 0 14 14"
+                >
+                  <path
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M7 .88v2.5m-5 0l1.84 1.69M1 8.88l2.42-.9m.97 5.14l1.11-2.24m6.5-7.5l-1.84 1.69M13 8.88l-2.42-.9m-.97 5.14L8.5 10.88"
+                  ></path>
+                </svg>
+              ) : (
+                <Send className="mr-2" />
+              )}
+              Start Hiring
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* <Button onClick={onSave} variant="secondary">
+            {saveStatus ? (
+              <>
+                <Check className="mr-2" /> Saved
+              </>
+            ) : (
+              <>
                 <BookmarkIcon className="mr-2" /> Save for later
-              </Button>
-            </CardContent>
-          </Card>
-        </fieldset>
+              </>
+            )}
+          </Button> */}
       </form>
     </Form>
   );

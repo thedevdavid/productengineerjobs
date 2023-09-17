@@ -1,9 +1,11 @@
 import { SiteMetaData } from "@/types";
 
 export const BASE_URL =
-  `https://${process.env.VERCEL_URL}` ||
-  process.env.NEXT_PUBLIC_BASE_URL ||
-  `http://localhost:${process.env.PORT || 3000}`;
+  process.env.NEXT_PUBLIC_VERCEL_ENV === "production"
+    ? (process.env.NEXT_PUBLIC_BASE_URL as string)
+    : (process.env.VERCEL_URL as string)
+    ? `https://${process.env.VERCEL_URL}`
+    : `http://localhost:${process.env.PORT || 3000}`;
 
 const defaultTitle = `Product Engineer Jobs`;
 const defaultDescription = `Jobs around the world 🌴.`;

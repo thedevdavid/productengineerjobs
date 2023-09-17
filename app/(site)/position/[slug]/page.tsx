@@ -7,7 +7,7 @@ import PostItem from "@/components/post-item";
 
 export default async function JobsByPosition({ params }: { params: { slug: string } }) {
   const posts = await getPostsByCategory(params.slug);
-  console.log(posts);
+
   if (!posts) {
     notFound();
   }

@@ -3,34 +3,14 @@
 import React, { FC, useEffect, useState } from "react";
 import { Editor as EditorClass, JSONContent } from "@tiptap/core";
 import CharacterCount from "@tiptap/extension-character-count";
-import { BubbleMenuProps, EditorContent, FloatingMenu, FloatingMenuProps, useEditor } from "@tiptap/react";
+import { EditorContent, FloatingMenu, FloatingMenuProps, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Bold, Italic, List, NumberedListLeft } from "iconoir-react";
 import { useDebouncedCallback } from "use-debounce";
 
 import useLocalStorage from "@/lib/hooks/use-local-storage";
-import { cn, debounce } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Toggle } from "@/components/ui/toggle";
-
-export const getPrevText = (
-  editor: Editor,
-  {
-    chars,
-    offset = 0,
-  }: {
-    chars: number;
-    offset?: number;
-  }
-) => {
-  // for now, we're using textBetween for now until we can figure out a way to stream markdown text
-  // with proper formatting: https://github.com/steven-tey/novel/discussions/7
-  return editor.state.doc.textBetween(
-    Math.max(0, editor.state.selection.from - chars),
-    editor.state.selection.from - offset,
-    "\n"
-  );
-  // complete(editor.storage.markdown.getMarkdown());
-};
 
 export type EditorProps = {
   defaultValue?: JSONContent | string;
@@ -179,7 +159,6 @@ export const Editor = ({
       onUpdate(e.editor);
       debouncedUpdates(e);
     },
-    autofocus: "end",
   });
 
   useEffect(() => {
@@ -193,7 +172,7 @@ export const Editor = ({
     return null;
   }
   const html = editor.getHTML();
-  console.log(html);
+
   return (
     <div
       onClick={() => {

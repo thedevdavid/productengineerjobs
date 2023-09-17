@@ -43,3 +43,5 @@ export type SiteMetaData = {
   postsOnHomePage: number;
   projectsOnHomePage: number;
 };
+
+export type MultiSelectOptions = Record<"_id" | "value" | "label" | "color", string>;

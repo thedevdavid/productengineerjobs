@@ -71,6 +71,13 @@ export default defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "benefits",
+      title: "Benefits",
+      type: "array",
+      of: [{ type: "reference", to: { type: "benefit" } }],
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: "applyUrl",
       title: "Apply URL",
       type: "string",

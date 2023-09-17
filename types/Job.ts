@@ -16,6 +16,17 @@ export interface Category extends SanityDocument {
 export interface Tag extends SanityDocument {
   _type: "tag";
   title: string;
+  color: string;
+  slug: {
+    current: string;
+    _type: "slug";
+  };
+}
+
+export interface Benefit extends SanityDocument {
+  _type: "benefit";
+  title: string;
+  color: string;
   slug: {
     current: string;
     _type: "slug";
@@ -48,4 +59,5 @@ export interface Job extends SanityDocument {
   };
   content: PortableTextBlock[];
   tags: Tag[];
+  benefits: Benefit[];
 }

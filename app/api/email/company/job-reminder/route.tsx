@@ -4,10 +4,7 @@ export async function POST(request: Request) {
   const res = await request.json();
   console.log(res);
 
-  // TODO: stripe payment
-  // TODO: onSuccess: stripe long-lived customer portal URL
-  // TODO: onSuccess: airtable submission
-  // TODO: onSuccess: auto-email to company
+  // TODO: job renewal reminder email at 14, 28, and 84 days
 
   return NextResponse.json({ res });
 }

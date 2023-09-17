@@ -1,5 +1,6 @@
 import { type SchemaTypeDefinition } from "sanity";
 
+import benefit from "./benefit";
 import category from "./category";
 import company from "./company";
 import job from "./job";
@@ -8,5 +9,5 @@ import salaryRange from "./salaryRange";
 import tag from "./tag";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [company, job, category, tag, page, salaryRange],
+  types: [company, job, category, tag, page, salaryRange, benefit],
 };

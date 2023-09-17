@@ -1,7 +1,7 @@
 import { cachedClient } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 
-import { Job, Tag } from "@/types/Job";
+import { Benefit, Job, Tag } from "@/types/Job";
 import { Page } from "@/types/Page";
 
 const jobPostFields = `
@@ -17,7 +17,7 @@ location,
 type,
 contract,
 salaryType,
-salaryRange,
+salaryRange
 `;
 
 export async function getPages(): Promise<Page[]> {
@@ -45,9 +45,22 @@ export async function getPage(slug: string): Promise<Page> {
 
 export async function getTags(): Promise<Tag[]> {
   return cachedClient(
-    groq`*[_type == "tag"] | order(publishedAt desc, _updatedAt desc){
+    groq`*[_type == "tag"] | order(title asc, _updatedAt desc){
+      _id,
       title,
-      slug
+      "slug": slug.current,
+      "color": color.hex
+    }`
+  );
+}
+
+export async function getBenefits(): Promise<Benefit[]> {
+  return cachedClient(
+    groq`*[_type == "benefit"] | order(title asc, _updatedAt desc){
+      _id,
+      title,
+      "slug": slug.current,
+      "color": color.hex
     }`
   );
 }
@@ -79,25 +92,20 @@ export const pagePathsQuery = groq`*[_type == "page" && defined(slug.current)][]
 export async function getPost(slug: string): Promise<Job> {
   return cachedClient(
     groq`*[_type == "job" && slug.current == $slug][0]{
-        _id,x
-        title,
-        isPromoted,
-        isVerified,
-        publishedAt,
-        "slug": slug.current,
-        category->{title, slug},
-        company->{name, slug, logo, twitter},
-        location,
-        type,
-        contract,
+        ${jobPostFields},
         applyUrl,
-        salaryType,
-        salaryRange,
         content,
         tags[]->{
           _id,
           title,
-          "slug": slug.current
+          "slug": slug.current,
+          "color": color.hex
+        },
+        benefits[]->{
+          _id,
+          title,
+          "slug": slug.current,
+          "color": color.hex
         }
     }`,
     { slug }

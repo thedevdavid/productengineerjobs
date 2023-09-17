@@ -1,9 +1,10 @@
+import { MoneySquare } from "iconoir-react";
 import { defineField, defineType } from "sanity";
 
 export default defineType({
-  name: "tag",
-  title: "Tags",
-  icon: () => "#",
+  name: "benefit",
+  title: "Benefits",
+  icon: MoneySquare,
   type: "document",
   fields: [
     defineField({

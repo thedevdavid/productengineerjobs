@@ -1,8 +1,10 @@
 import Image from "next/image";
+import { sanityFetch } from "@/sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
-import { getPost } from "@/sanity/queries";
+import { jobBySlugQuery } from "@/sanity/queries";
 import { PortableText } from "@portabletext/react";
 
+import { Job } from "@/types/Job";
 import { Sidebar } from "@/components/job-sidebar";
 import { portableTextComponents } from "@/components/portable-text-components";
 
@@ -11,7 +13,11 @@ type Props = {
 };
 
 export default async function JobPage({ params }: Props) {
-  const job = await getPost(params.slug);
+  const job = await sanityFetch<Job>({
+    query: jobBySlugQuery,
+    params: { slug: params.slug },
+    tags: [`job:${params.slug}`],
+  });
 
   return (
     <div className="container mx-auto my-20 grid max-w-7xl grid-cols-1 place-items-start justify-between gap-8 lg:grid-cols-3">

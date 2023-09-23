@@ -412,15 +412,6 @@ export const JobForm = ({ tags, benefits }: JobFormProps) => {
                             Part-Time
                           </FormLabel>
                         </FormItem>
-                        <FormItem className="flex space-x-1 space-y-1">
-                          <FormControl>
-                            <RadioGroupItem value="internship" className="peer hidden" />
-                          </FormControl>
-                          <FormLabel className="block cursor-pointer rounded-md border border-border p-4 font-normal shadow-sm hover:border-primary peer-aria-checked:border-primary peer-aria-checked:ring-1 peer-aria-checked:ring-ring">
-                            <CheckCircle className="mr-2 hidden h-4 w-4 peer-aria-checked:inline" />
-                            Internship
-                          </FormLabel>
-                        </FormItem>
                       </RadioGroup>
                     </FormControl>
                     <FormMessage />

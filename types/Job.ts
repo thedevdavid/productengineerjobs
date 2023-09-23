@@ -49,7 +49,7 @@ export interface Job extends SanityDocument {
   company: Company;
   location: (typeof countriesAndRegions)[number]["value"];
   type: "remote" | "hybrid" | "onsite";
-  contract: "full-time" | "part-time" | "contract" | "internship";
+  contract: "full-time" | "part-time" | "contract";
   applyUrl: string;
   salaryType: "hourly" | "yearly" | "project";
   salaryRange: {

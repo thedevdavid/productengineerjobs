@@ -1,6 +1,8 @@
-import { getPages } from "@/sanity/queries";
+import { sanityFetch } from "@/sanity/lib/client";
+import { pagesQuery } from "@/sanity/queries";
 import { NavItem } from "@/types";
 
+import { Page } from "@/types/Page";
 import { cn } from "@/lib/utils";
 import Footer from "@/components/footer";
 import { Navigation } from "@/components/navigation";
@@ -9,8 +11,11 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default async function RootLayout({ children }: RootLayoutProps) {
-  const pages = await getPages();
+export default async function SiteLayout({ children }: RootLayoutProps) {
+  const pages = await sanityFetch<Page[]>({
+    query: pagesQuery,
+    tags: [`page`],
+  });
 
   const content = pages
     .filter((page) => page.slug.startsWith("for"))

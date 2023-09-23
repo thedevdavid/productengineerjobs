@@ -1,6 +1,5 @@
 import * as React from "react";
 import Link from "next/link";
-import { getPages } from "@/sanity/queries";
 import { NavItem } from "@/types";
 
 // import { navigationLinks } from "@/lib/navigation-links";

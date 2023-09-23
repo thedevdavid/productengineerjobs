@@ -1,5 +1,8 @@
 import { ImageResponse } from "next/server";
-import { getPage } from "@/sanity/queries";
+import { sanityFetch } from "@/sanity/lib/client";
+import { pageQuery } from "@/sanity/queries";
+
+import { Page } from "@/types/Page";
 
 export const runtime = "edge";
 
@@ -12,7 +15,11 @@ export const contentType = "image/png";
 
 // Image generation
 export default async function Image({ params }: { params: { slug: string } }) {
-  const post = await getPage(params.slug);
+  const post = await sanityFetch<Page>({
+    query: pageQuery,
+    params: { slug: params.slug },
+    tags: [`page:${params.slug}`],
+  });
 
   if (!post) {
     return {};

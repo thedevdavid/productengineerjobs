@@ -22,7 +22,6 @@ const navigation = {
     { name: "Full-Time", href: "/contract/full-time" },
     { name: "Part-Time", href: "/contract/part-time" },
     { name: "Contract", href: "/contract/contract" },
-    { name: "Internship", href: "/contract/internship" },
   ],
   type: [
     { name: "Remote", href: "/type/remote" },

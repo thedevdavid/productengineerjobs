@@ -1,15 +1,21 @@
 import { notFound } from "next/navigation";
-import { getPage } from "@/sanity/queries";
+import { pageQuery } from "@/sanity/queries";
 import { PortableText } from "@portabletext/react";
 
 import { portableTextComponents } from "@/components/portable-text-components";
+import { sanityFetch } from '@/sanity/lib/client';
+import { Page } from '@/types/Page';
 
 type Props = {
   params: { slug: string };
 };
 
 export default async function Page({ params }: Props) {
-  const page = await getPage(params.slug);
+  const page = await sanityFetch<Page>({
+    query: pageQuery,
+    params: { slug: params.slug },
+    tags: [`page:${params.slug}`],
+  });
 
   if (!page) {
     notFound();

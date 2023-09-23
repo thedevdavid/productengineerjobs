@@ -6,8 +6,6 @@ import { SanityImage } from "@/components/sanity-image";
 
 export const portableTextComponents: Partial<PortableTextReactComponents> = {
   marks: {
-    gold: ({ children }) => <span className="text-secondary">{children}</span>,
-    red: ({ children }) => <span className="bg-red-700">{children}</span>,
     link: ({ value, children }) => {
       const isExternal = (value?.href || "").startsWith("http");
       if (isExternal) {

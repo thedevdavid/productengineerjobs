@@ -65,7 +65,6 @@ export default defineType({
           { title: "Full-time", value: "full-time" },
           { title: "Part-time", value: "part-time" },
           { title: "Contract", value: "contract" },
-          { title: "Internship", value: "internship" },
         ],
       },
       validation: (rule) => rule.required(),

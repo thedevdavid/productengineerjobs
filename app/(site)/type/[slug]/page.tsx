@@ -1,14 +1,38 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPostsByContract, getPostsByLocation, getPostsByType } from "@/sanity/queries";
+import { sanityFetch } from "@/sanity/lib/client";
+import { defineMetadata } from "@/sanity/lib/metadata";
+import { jobBySlugQuery, jobsByTypeQuery } from "@/sanity/queries";
 import { ArrowUpCircle, EmptyPage } from "iconoir-react";
 
+import { Job } from "@/types/Job";
 import { Button } from "@/components/ui/button";
 import { EmptyList } from "@/components/empty-list";
 import PostItem from "@/components/post-item";
 
+type Props = {
+  params: { slug: string };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const page = await sanityFetch<Job | null>({
+    query: jobBySlugQuery,
+    params: { slug: params.slug },
+    tags: [`job:${params.slug}`],
+  });
+
+  return defineMetadata({
+    title: page?.title,
+  });
+}
+
 export default async function JobsByType({ params }: { params: { slug: string } }) {
-  const posts = await getPostsByType(params.slug);
+  const posts = await sanityFetch<Job[]>({
+    query: jobsByTypeQuery,
+    params: { slug: params.slug },
+    tags: [`job:${params.slug}`],
+  });
 
   if (!posts) {
     notFound();

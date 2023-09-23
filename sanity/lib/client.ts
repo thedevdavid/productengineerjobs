@@ -1,40 +1,36 @@
-import { cache } from "react";
-import { apiVersion, dataset, projectId, useCdn } from "@/sanity/lib/api";
-import { createClient, type SanityClient } from "next-sanity";
+import "server-only";
 
-export function getClient({ preview }: { preview?: { token: string } }): SanityClient {
-  const client = createClient({
-    apiVersion,
-    dataset,
-    projectId,
-    useCdn,
-    perspective: "published",
-  });
-  if (preview) {
-    if (!preview.token) {
-      throw new Error("You must provide a token to preview drafts");
-    }
-    return client.withConfig({
-      token: preview.token,
-      useCdn: false,
-      ignoreBrowserTokenWarning: true,
-      perspective: "previewDrafts",
-    });
-  }
-  return client;
-}
+import type { QueryParams } from "@sanity/client";
+import { createClient } from "next-sanity";
 
-export const client = createClient({
-  apiVersion,
-  dataset,
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
+const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2023-09-22";
+
+const client = createClient({
   projectId,
-  useCdn,
+  dataset,
+  apiVersion, // https://www.sanity.io/docs/api-versioning
+  useCdn: false,
 });
 
-export const cachedClient = cache(client.fetch.bind(client));
+const DEFAULT_PARAMS = {} as QueryParams;
+const DEFAULT_TAGS = [] as string[];
 
-export const getCachedClient = (preview?: { token: string }) => {
-  const client = getClient({ preview });
-
-  return cache(client.fetch.bind(client));
-};
+export async function sanityFetch<QueryResponse>({
+  query,
+  params = DEFAULT_PARAMS,
+  tags = DEFAULT_TAGS,
+}: {
+  query: string;
+  params?: QueryParams;
+  tags: string[];
+}): Promise<QueryResponse> {
+  return client.fetch<QueryResponse>(query, params, {
+    cache: "force-cache",
+    next: {
+      //revalidate: 30, // for simple, time-based revalidation
+      tags, // for tag-based revalidation
+    },
+  });
+}

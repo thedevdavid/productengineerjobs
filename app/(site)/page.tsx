@@ -1,12 +1,17 @@
-import { getPosts } from "@/sanity/queries";
+import { sanityFetch } from "@/sanity/lib/client";
+import { jobsQuery } from "@/sanity/queries";
 import { ArrowUpCircle } from "iconoir-react";
 
+import { Job } from "@/types/Job";
 import { EmptyList } from "@/components/empty-list";
 import Hero from "@/components/hero";
 import PostItem from "@/components/post-item";
 
 export default async function Home() {
-  const posts = await getPosts();
+  const posts = await sanityFetch<Job[]>({
+    query: jobsQuery,
+    tags: [`job`],
+  });
 
   return (
     <div className="pb-10">

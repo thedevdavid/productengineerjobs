@@ -11,7 +11,7 @@ export default async function JobsByContract({ params }: { params: { slug: strin
   const posts = await sanityFetch<Job[]>({
     query: jobsByContractQuery,
     params: { slug: params.slug },
-    tags: [`job:${params.slug}`],
+    tags: [`job`],
   });
 
   if (!posts) {

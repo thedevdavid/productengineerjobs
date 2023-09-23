@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { revalidateSecret } from "@/sanity/lib/api";
 import { parseBody } from "next-sanity/webhook";
@@ -23,6 +23,15 @@ export async function POST(req: NextRequest) {
     // If the `_type` is `page`, then all `client.fetch` calls with
     // `{next: {tags: ['page']}}` will be revalidated
     revalidateTag(body._type);
+    if (body._type === "job") {
+      revalidatePath("/");
+      revalidatePath("/contract");
+      revalidatePath("/location");
+      revalidatePath("/position");
+      revalidatePath("/type");
+    } else if (body._type === "tag" || body._type === "benefit") {
+      revalidatePath("/post-a-job");
+    }
     if (body.slug) {
       revalidateTag(`${body._type}:${body.slug}`);
     }

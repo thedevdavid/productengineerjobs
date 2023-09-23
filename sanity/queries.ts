@@ -118,13 +118,13 @@ export const jobsByCategoryQuery = groq`
 `;
 
 export const jobsByTypeQuery = groq`
-  *[_type == "job" && type == $type] | order(publishedAt desc, _updatedAt desc){
+  *[_type == "job" && type == $slug] | order(publishedAt desc, _updatedAt desc){
     ${jobPostFields}
   }
 `;
 
 export const jobsByContractQuery = groq`
-  *[_type == "job" && contract == $contract] | order(publishedAt desc, _updatedAt desc){
+  *[_type == "job" && contract == $slug] | order(publishedAt desc, _updatedAt desc){
     ${jobPostFields}
   }
 `;
@@ -142,7 +142,7 @@ export const jobsByRemoteOnlyQuery = groq`
 `;
 
 export const jobsByLocationQuery = groq`
-  *[_type == "job" && location == $location] | order(publishedAt desc, _updatedAt desc){
+  *[_type == "job" && location == $slug] | order(publishedAt desc, _updatedAt desc){
     ${jobPostFields}
   }
 `;

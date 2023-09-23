@@ -22,7 +22,7 @@ export default async function SiteLayout({ children }: RootLayoutProps) {
     .map((page) => {
       return {
         title: page.title,
-        href: page.slug,
+        href: `${page.slug}`,
       };
     });
   const navigationLinks: NavItem[] = [

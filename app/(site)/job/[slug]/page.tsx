@@ -90,3 +90,4 @@ export default async function JobPage({ params }: Props) {
     </div>
   );
 }
+export const dynamic = "auto";

@@ -1,8 +1,8 @@
 import { ImageResponse } from "next/server";
-import { sanityFetch } from "@/sanity/lib/client";
-import { pageQuery } from "@/sanity/queries";
 
 import { Page } from "@/types/Page";
+import { sanityFetch } from "@/lib/sanity.fetch";
+import { pageQuery } from "@/lib/sanity.queries";
 
 export const runtime = "edge";
 
@@ -15,13 +15,13 @@ export const contentType = "image/png";
 
 // Image generation
 export default async function Image({ params }: { params: { slug: string } }) {
-  const post = await sanityFetch<Page>({
+  const page = await sanityFetch<Page>({
     query: pageQuery,
     params: { slug: params.slug },
     tags: [`page:${params.slug}`],
   });
 
-  if (!post) {
+  if (!page) {
     return {};
   }
 
@@ -68,7 +68,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
               lineHeight: 1.1,
             }}
           >
-            {post.title}
+            {page.title}
           </p>
         </div>
       </div>

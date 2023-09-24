@@ -1,9 +1,10 @@
-import { apiVersion, dataset, projectId } from "@/sanity/lib/api";
-import { schema } from "@/sanity/schemas";
 import { colorInput } from "@sanity/color-input";
 import { visionTool } from "@sanity/vision";
 import { defineConfig, isDev } from "sanity";
 import { deskTool } from "sanity/desk";
+
+import { apiVersion, dataset, projectId } from "./lib/sanity.api";
+import { schema } from "./schemas";
 
 const title = process.env.NEXT_PUBLIC_SANITY_PROJECT_TITLE || "ProductEngineerJobs.co";
 

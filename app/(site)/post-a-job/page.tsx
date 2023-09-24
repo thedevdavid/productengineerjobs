@@ -1,7 +1,6 @@
-import { sanityFetch } from "@/sanity/lib/client";
-import { benefitsQuery, tagsQuery } from "@/sanity/queries";
-
 import { Benefit, Tag } from "@/types/Job";
+import { sanityFetch } from "@/lib/sanity.fetch";
+import { benefitsQuery, tagsQuery } from "@/lib/sanity.queries";
 
 import { JobForm } from "./form";
 

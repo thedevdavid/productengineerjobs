@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
-import { pageQuery } from "@/sanity/queries";
 import { PortableText } from "@portabletext/react";
 
 import { portableTextComponents } from "@/components/portable-text-components";
-import { sanityFetch } from '@/sanity/lib/client';
 import { Page } from '@/types/Page';
+import { pageQuery } from '@/lib/sanity.queries';
+import { sanityFetch } from '@/lib/sanity.fetch';
 
 type Props = {
   params: { slug: string };

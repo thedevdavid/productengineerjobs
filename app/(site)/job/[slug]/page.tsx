@@ -1,10 +1,11 @@
 import Image from "next/image";
-import { sanityFetch } from "@/sanity/lib/client";
-import { urlForImage } from "@/sanity/lib/image";
-import { jobBySlugQuery } from "@/sanity/queries";
+import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
 
 import { Job } from "@/types/Job";
+import { sanityFetch } from "@/lib/sanity.fetch";
+import { urlForImage } from "@/lib/sanity.image";
+import { jobBySlugQuery } from "@/lib/sanity.queries";
 import { Sidebar } from "@/components/job-sidebar";
 import { portableTextComponents } from "@/components/portable-text-components";
 
@@ -19,11 +20,16 @@ export default async function JobPage({ params }: Props) {
     tags: [`job:${params.slug}`],
   });
 
+  if (!job) {
+    notFound();
+  }
+
   return (
     <div className="container mx-auto my-20 grid max-w-7xl grid-cols-1 place-items-start justify-between gap-8 lg:grid-cols-3">
       <div className="col-span-1 w-full lg:col-span-2">
         <div className="flex items-center justify-start text-xl font-bold leading-7 text-foreground/70 sm:truncate sm:tracking-tight">
           <Image
+            //@ts-expect-error
             src={urlForImage(job.company.logo).url()}
             alt={job.company.name}
             width={100}

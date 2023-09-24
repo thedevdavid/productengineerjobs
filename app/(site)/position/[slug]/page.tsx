@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
-import { sanityFetch } from "@/sanity/lib/client";
-import { jobsByCategoryQuery } from "@/sanity/queries";
 import { ArrowUpCircle } from "iconoir-react";
 
 import { Job } from "@/types/Job";
+import { sanityFetch } from "@/lib/sanity.fetch";
+import { jobsByCategoryQuery } from "@/lib/sanity.queries";
 import { EmptyList } from "@/components/empty-list";
 import PostItem from "@/components/post-item";
 
@@ -11,7 +11,7 @@ export default async function JobsByPosition({ params }: { params: { slug: strin
   const posts = await sanityFetch<Job[]>({
     query: jobsByCategoryQuery,
     params: { slug: params.slug },
-    tags: [`job`, `position`],
+    tags: [`job`],
   });
 
   if (!posts) {

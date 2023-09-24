@@ -1,9 +1,9 @@
 import { ImageResponse } from "next/server";
-import { sanityFetch } from "@/sanity/lib/client";
-import { jobBySlugQuery } from "@/sanity/queries";
 import { format, parseISO } from "date-fns";
 
 import { Job } from "@/types/Job";
+import { sanityFetch } from "@/lib/sanity.fetch";
+import { jobBySlugQuery } from "@/lib/sanity.queries";
 
 export const runtime = "edge";
 
@@ -16,17 +16,17 @@ export const contentType = "image/png";
 
 // Image generation
 export default async function Image({ params }: { params: { slug: string } }) {
-  const post = await sanityFetch<Job>({
+  const job = await sanityFetch<Job>({
     query: jobBySlugQuery,
     params: { slug: params.slug },
     tags: [`job:${params.slug}`],
   });
 
-  if (!post) {
+  if (!job) {
     return {};
   }
 
-  const date = post.publishedAt.toISOString() || post._createdAt;
+  const date = job.publishedAt.toISOString() || job._createdAt;
 
   return new ImageResponse(
     (
@@ -71,7 +71,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
               lineHeight: 1.1,
             }}
           >
-            {post.title}
+            {job.title}
           </p>
 
           <p

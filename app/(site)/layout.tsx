@@ -1,36 +1,12 @@
-import { sanityFetch } from "@/sanity/lib/client";
-import { pagesQuery } from "@/sanity/queries";
-import { NavItem } from "@/types";
-
-import { Page } from "@/types/Page";
 import { cn } from "@/lib/utils";
 import Footer from "@/components/footer";
-import { Navigation } from "@/components/navigation";
+import { TopNav } from "@/components/top-nav";
 
 interface RootLayoutProps {
   children: React.ReactNode;
 }
 
 export default async function SiteLayout({ children }: RootLayoutProps) {
-  const pages = await sanityFetch<Page[]>({
-    query: pagesQuery,
-    tags: [`page`],
-  });
-
-  const content = pages
-    .filter((page) => page.slug.startsWith("for"))
-    .map((page) => {
-      return {
-        title: page.title,
-        href: `${page.slug}`,
-      };
-    });
-  const navigationLinks: NavItem[] = [
-    {
-      title: "What's a Product Engineer?",
-      content,
-    },
-  ];
   return (
     <>
       <a
@@ -40,7 +16,7 @@ export default async function SiteLayout({ children }: RootLayoutProps) {
       >
         Skip to Content
       </a>
-      <Navigation navigationLinks={navigationLinks} />
+      <TopNav />
       <main className={cn("mb-8 mt-20")} id="main-content">
         {children}
       </main>

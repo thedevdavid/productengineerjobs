@@ -1,16 +1,11 @@
+import "server-only";
+
 import type { QueryParams } from "@sanity/client";
-import { createClient } from "next-sanity";
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
-const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2023-09-22";
+import { revalidateSecret } from "@/lib/sanity.api";
+import { client } from "@/lib/sanity.client";
 
-const client = createClient({
-  projectId,
-  dataset,
-  apiVersion, // https://www.sanity.io/docs/api-versioning
-  useCdn: false,
-});
+export const token = process.env.SANITY_API_READ_TOKEN;
 
 const DEFAULT_PARAMS = {} as QueryParams;
 const DEFAULT_TAGS = [] as string[];
@@ -25,7 +20,8 @@ export async function sanityFetch<QueryResponse>({
   tags: string[];
 }): Promise<QueryResponse> {
   return client.fetch<QueryResponse>(query, params, {
-    cache: "force-cache",
+    // We only cache if there's a revalidation webhook setup
+    cache: revalidateSecret ? "force-cache" : "no-store",
     next: {
       //revalidate: 30, // for simple, time-based revalidation
       tags, // for tag-based revalidation

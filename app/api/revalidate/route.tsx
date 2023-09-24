@@ -8,6 +8,7 @@ export async function POST(req: NextRequest) {
     const { body, isValidSignature } = await parseBody<{
       _type: string;
       slug?: string | undefined;
+      subdir?: string | undefined;
     }>(req, revalidateSecret);
 
     if (!isValidSignature) {
@@ -23,17 +24,12 @@ export async function POST(req: NextRequest) {
     // If the `_type` is `page`, then all `client.fetch` calls with
     // `{next: {tags: ['page']}}` will be revalidated
     revalidateTag(body._type);
-    if (body._type === "job") {
-      revalidatePath("/");
-      revalidatePath("/contract");
-      revalidatePath("/location");
-      revalidatePath("/position");
-      revalidatePath("/type");
-    } else if (body._type === "tag" || body._type === "benefit") {
-      revalidatePath("/post-a-job");
-    }
     if (body.slug) {
       revalidateTag(`${body._type}:${body.slug}`);
+    }
+    if (body.subdir) {
+      revalidatePath(body._type);
+      revalidatePath(body.subdir);
     }
 
     return NextResponse.json({

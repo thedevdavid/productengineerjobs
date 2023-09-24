@@ -11,7 +11,7 @@ export default async function JobsByLocation({ params }: { params: { slug: strin
   const posts = await sanityFetch<Job[]>({
     query: jobsByLocationQuery,
     params: { slug: params.slug },
-    tags: [`job`],
+    tags: [`job`, `location`],
   });
 
   if (!posts) {

@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = await sanityFetch<Job | null>({
     query: jobBySlugQuery,
     params: { slug: params.slug },
-    tags: [`job`],
+    tags: [`job`, `type`],
   });
 
   return defineMetadata({
@@ -31,7 +31,7 @@ export default async function JobsByType({ params }: { params: { slug: string } 
   const posts = await sanityFetch<Job[]>({
     query: jobsByTypeQuery,
     params: { slug: params.slug },
-    tags: [`job`],
+    tags: [`job`, `type`],
   });
 
   if (!posts) {

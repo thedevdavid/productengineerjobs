@@ -10,7 +10,7 @@ import PostItem from "@/components/post-item";
 export default async function Home() {
   const posts = await sanityFetch<Job[]>({
     query: jobsQuery,
-    tags: [`job`],
+    tags: [`job`, `home`],
   });
 
   return (

@@ -1,17 +1,38 @@
+import { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
 
 import { Job } from "@/types/Job";
+import { readToken } from "@/lib/sanity.api";
+import { client } from "@/lib/sanity.client";
 import { sanityFetch } from "@/lib/sanity.fetch";
 import { urlForImage } from "@/lib/sanity.image";
-import { jobBySlugQuery } from "@/lib/sanity.queries";
+import { jobBySlugQuery, jobPathsQuery } from "@/lib/sanity.queries";
+import { defineMetadata } from "@/lib/utils.metadata";
 import { Sidebar } from "@/components/job-sidebar";
 import { portableTextComponents } from "@/components/portable-text-components";
 
 type Props = {
   params: { slug: string };
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const page = await sanityFetch<Job | null>({
+    query: jobBySlugQuery,
+    params: { slug: params.slug },
+    tags: [`job:${params.slug}`],
+  });
+
+  return defineMetadata({
+    title: page?.title,
+  });
+}
+
+export async function generateStaticParams() {
+  const slugs = await client.fetch<string[]>(jobPathsQuery, {}, { token: readToken, perspective: "published" });
+  return slugs.map((slug) => ({ slug }));
+}
 
 export default async function JobPage({ params }: Props) {
   const job = await sanityFetch<Job>({
